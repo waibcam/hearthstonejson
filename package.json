@@ -1,0 +1,16 @@
+{
+	"name"					: "hearthstonejson",
+	"version"				: "1.0.0",
+	"author"				: "Robert Schultz <robert@cosmicrealms.com>",
+	"description"			: "Code to extract card data from Hearthstone MPQs into JSON files",
+	"private"				: true,
+	"dependencies"			:
+	{
+		"xutil"				: "git://github.com/Sembiance/xutil.git",
+		"tiptoe"			: ">= 1.0.0",
+		"xbase"				: "git://github.com/Sembiance/xbase.git",
+		"libxmljs"			: ">= 0.9.0",
+		"glob"				: ">= 3.2.9",
+		"rimraf"			: ">= 2.2.6"
+	}
+}
