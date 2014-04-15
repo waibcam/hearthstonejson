@@ -97,7 +97,6 @@ function processCard(cardXMLPath, cb)
 	tiptoe(
 		function loadFile()
 		{
-			base.info(cardXMLPath);
 			fs.readFile(cardXMLPath, {encoding:"utf8"}, this);
 		},
 		function processFile(cardXMLData)
