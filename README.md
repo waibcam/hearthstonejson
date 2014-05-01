@@ -9,7 +9,7 @@ Setup
 -----
 
     git clone https://github.com/Sembiance/hearthstonejson.git
-    ./build.sh
+    ./setup.sh
 
 Run
 ---

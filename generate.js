@@ -21,6 +21,7 @@ var MPQ_ORIGINAL_PATH = process.argv[2];
 var MPQ_FILE_NAME = "base-Win.MPQ";
 var OUT_PATH = path.join(__dirname, "out");
 var CARDXML_FILE_NAME = "cardxml0.unity3d";
+var CARDXML_DIR_NAME = path.basename(CARDXML_FILE_NAME, path.extname(CARDXML_FILE_NAME));
 var MPQEDITOR_PATH = path.join(__dirname, "MPQEditor.exe");
 var DISUNITY_PATH = path.join(__dirname, "disunity", "disunity.sh");
 
@@ -42,7 +43,7 @@ tiptoe(
 	function extractMPQ()
 	{
 		base.info("Extracting MPQ...");
-		runUtil.run("wine", [MPQEDITOR_PATH, "/extract", path.join("out", MPQ_FILE_NAME), "Data\\Win\\cardxml0.unity3d", "out"], {cwd:__dirname, silent : true}, this);
+		runUtil.run("wine", [MPQEDITOR_PATH, "/extract", path.join("out", MPQ_FILE_NAME), "Data\\Win\\" + CARDXML_FILE_NAME, "out"], {cwd:__dirname, silent : true}, this);
 	},
 	function extractCardXMLIfNeeded()
 	{
@@ -52,7 +53,7 @@ tiptoe(
 	function getCards()
 	{
 		base.info("Finding card XML...");
-		glob(path.join(OUT_PATH, "cardxml0", "TextAsset", "*.txt"), this);
+		glob(path.join(OUT_PATH, CARDXML_DIR_NAME, "TextAsset", "*.txt"), this);
 	},
 	function processCards(files)
 	{
@@ -77,6 +78,13 @@ tiptoe(
 		{
 			fs.writeFile(path.join(OUT_PATH, setName + ".json"), JSON.stringify(cards.sort(function(a, b) { return a.name.localeCompare(b.name); })), {encoding:"utf8"}, this.parallel());
 		}.bind(this));
+	},
+	function cleanup()
+	{
+		base.info("Cleaning up...");
+		fs.unlink(path.join(OUT_PATH, MPQ_FILE_NAME), this.parallel());
+		fs.unlink(path.join(OUT_PATH, CARDXML_FILE_NAME), this.parallel());
+		rimraf(path.join(OUT_PATH, CARDXML_DIR_NAME), this.parallel());
 	},
 	function finish(err)
 	{
@@ -121,6 +129,8 @@ function processCard(cardXMLPath, cb)
 			card.elite = getTagValue(Entity, "Elite");
 			card.race = getTagValue(Entity, "Race");
 			card.playerClass = getTagValue(Entity, "Class");
+			card.howToGet = getTagValue(Entity, "HowToGetThisCard");
+			card.howToGetGold = getTagValue(Entity, "HowToGetThisGoldCard");
 
 			Object.keys(card).forEach(function(key)
 			{
