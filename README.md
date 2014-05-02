@@ -20,4 +20,4 @@ Run
 Results
 -------
 
-In the 'out' directory will be an 'AllCards.json' file. All will be a bunch of other .json files of cards seperated by set.
+In the 'out' directory will be a JSON file per set.
