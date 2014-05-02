@@ -12,12 +12,12 @@ It is meant to run in Linux. To run you need:
 * cmake
 
 
-Setup
+Build
 -----
 
     git clone https://github.com/Sembiance/hearthstonejson.git
     cd hearthstonejson
-    ./setup.sh
+    ./build.sh
 
 Run
 ---
