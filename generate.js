@@ -58,6 +58,7 @@ tiptoe(
 		base.info("Processing card XML...");
 		C.LANGUAGES.serialForEach(function(language, cb)
 		{
+			base.info("Processing language: %s", language);
 			files.serialForEach(function(file, subcb) { processCard(file, language, subcb); }, cb);
 		}, this);
 	},
@@ -73,7 +74,8 @@ tiptoe(
 	function cleanup()
 	{
 		base.info("Cleaning up...");
-		rimraf(OUT_PATH_TO_EXTRACTED_DATA, this);
+		//rimraf(OUT_PATH_TO_EXTRACTED_DATA, this);
+		this();
 	},
 	function finish(err)
 	{
@@ -116,6 +118,13 @@ function saveSet(cards, language, cb)
 	);
 }
 
+var USED_TAGS = ["CardID", "CardName", "CardSet", "CardType", "Faction", "Rarity", "Cost", "Atk", "Health", "Durability", "CardTextInHand", "CardTextInPlay", "FlavorText", "ArtistName", "Collectible",
+				 "Elite", "Race", "Class", "HowToGetThisCard", "HowToGetThisGoldCard"];
+var IGNORED_TAGS = ["AttackVisualType", "EnchantmentBirthVisual", "EnchantmentIdleVisual", "TargetingArrowText", "DevState", "TriggerVisual", "Recall"];
+var MECHANIC_TAGS = ["Windfury", "Combo", "Secret", "Battlecry", "Deathrattle", "Taunt", "Stealth", "Spellpower", "Enrage", "Freeze", "Charge", "Overload", "Divine Shield", "Silence", "Morph", "OneTurnEffect", "Poisonous", "Aura", "AdjacentBuff",
+					"HealTarget", "GrantCharge", "ImmuneToSpellpower", "AffectedBySpellPower", "Summoned"];
+var KNOWN_TAGS = USED_TAGS.concat(IGNORED_TAGS, MECHANIC_TAGS);
+
 function processCard(cardXMLPath, language, cb)
 {
 	var card = {};
@@ -129,6 +138,18 @@ function processCard(cardXMLPath, language, cb)
 		{
 			var xmlDoc = libxmljs.parseXml(cardXMLData);
 			var Entity = xmlDoc.get("/Entity");
+
+			Entity.childNodes().forEach(function(childNode)
+			{
+				if(childNode.name()!=="Tag")
+					return;
+
+				var tagName = childNode.attr("name").value();
+				if(KNOWN_TAGS.contains(tagName))
+					return;
+
+				base.info("New Tag name [%s] for card: %s", tagName, cardXMLPath);
+			});
 
 			card.id = Entity.attr("CardID").value();
 			card.name = getTagValue(Entity, "CardName", language);
@@ -150,6 +171,18 @@ function processCard(cardXMLPath, language, cb)
 			card.playerClass = getTagValue(Entity, "Class", language);
 			card.howToGet = getTagValue(Entity, "HowToGetThisCard", language);
 			card.howToGetGold = getTagValue(Entity, "HowToGetThisGoldCard", language);
+			card.mechanics = [];
+
+			MECHANIC_TAGS.forEach(function(MECHANIC_TAG)
+			{
+				if(getTagValue(Entity, MECHANIC_TAG, language))
+					card.mechanics.push(MECHANIC_TAG);
+			});
+
+			if(!card.mechanics.length)
+				delete card.mechanics;
+			else
+				card.mechanics = card.mechanics.sort();
 
 			Object.keys(card).forEach(function(key)
 			{

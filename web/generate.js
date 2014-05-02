@@ -17,7 +17,7 @@ var dustData =
 {
 	title           : "Hearthstone card data in JSON format",
 	sets            : {},	// Later changed to []
-	version         : "1.1.0",
+	version         : "1.2.0",
 	lastUpdated     : "May 2, 2014",
 	allSizeLangs    : [],
 	allSizeZipLangs : [],
@@ -236,7 +236,8 @@ function checkSetCardDataTypes(setName, cb)
 		howToGet     : "string",
 		howToGetGold : "string",
 		race         : "string",
-		inPlayText   : "string"
+		inPlayText   : "string",
+		mechanics    : ["string"]
 	};
 
 	tiptoe(

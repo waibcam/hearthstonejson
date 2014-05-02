@@ -1,9 +1,6 @@
 /---------------\
 | High Priority |
 \---------------/
-* Add multiple languages
-
-* Add a compareToRelease JSON diff to see changes before uploading
 
 
 /-----------------\

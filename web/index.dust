@@ -79,6 +79,7 @@
           faction : "Alliance",
 
              text : "<b>Charge</b>. <b>Battlecry:</b> Summon two 1/1 Whelps for your opponent.",
+        mechanics : ["Battlecry", "Charge"],
 
            flavor : "At least he has Angry Chicken.",
 
@@ -160,6 +161,11 @@
 					<td>inPlayText</td>
 					<td>"For the Alliance!"</td>
 					<td>The text of the card when it is in play. May contain HTML tags and other symbols which are present in the Hearthstones files as presented here.</td>
+				</tr>
+				<tr>
+					<td>mechanics</td>
+					<td>["Battlecry", "Charge"]</td>
+					<td>The mechanics of the card. Example values: Windfury, Combo, Secret, Battlecry, Deathrattle, Taunt</td>
 				</tr>
 				<tr>
 					<td>flavor</td>
