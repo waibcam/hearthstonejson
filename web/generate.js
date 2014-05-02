@@ -2,6 +2,7 @@
 
 var base = require("xbase"),
 	util = require("util"),
+	C = require("C"),
 	runUtil = require("xutil").run,
 	rimraf = require("rimraf"),
 	printUtil = require("xutil").print,
@@ -14,10 +15,13 @@ var base = require("xbase"),
 
 var dustData = 
 {
-	title : "Hearthstone card data in JSON format",
-	sets  : [],
-	version : "1.0.0",
-	lastUpdated : "May 1, 2014"
+	title           : "Hearthstone card data in JSON format",
+	sets            : {},	// Later changed to []
+	version         : "1.1.0",
+	lastUpdated     : "May 2, 2014",
+	allSizeLangs    : [],
+	allSizeZipLangs : [],
+	changeLog       : fs.readFileSync(path.join(__dirname, "changelog.html"), {encoding : "utf8"})
 };
 
 tiptoe(
@@ -31,69 +35,85 @@ tiptoe(
 	},
 	function findJSON()
 	{
-		glob(path.join(__dirname, "..", "out", "*.json"), this);
+		glob(path.join(__dirname, "..", "out", "*.enUS.json"), this);
 	},
-	function loadJSON(jsonFiles)
+	function processJSON(jsonFiles)
 	{
-		this.data.setNames = jsonFiles.map(function(jsonFile) { return path.basename(jsonFile, ".json"); }).sort();
+		this.data.setNames = jsonFiles.map(function(jsonFile)
+		{
+			var setName = path.basename(jsonFile.substring(0, jsonFile.indexOf(".enUS.json")));
+			dustData.sets[setName] = {sizeLangs:[]};
+			return setName;
+		}).sort();
+
+		C.LANGUAGES.serialForEach(function(language, cb) { processLanguage(this.data.setNames, language, cb); }.bind(this), this);
+	},
+	function makeSymlinks()
+	{
+		fs.symlink("AllSets.enUS.json", path.join(__dirname, "json", "AllSets.json"), this.parallel());
+		fs.symlink("AllSets.enUS.json.zip", path.join(__dirname, "json", "AllSets.json.zip"), this.parallel());
+
 		this.data.setNames.forEach(function(setName)
 		{
-			fs.readFile(path.join(__dirname, "..", "out", setName + ".json"), {encoding : "utf8"}, this.parallel());
+			fs.symlink(setName + ".enUS.json", path.join(__dirname, "json", setName + ".json"), this.parallel());
 		}.bind(this));
-	},
-	function saveSets()
-	{
-		var args=arguments;
-
-		var allSets = {};
-
-		this.data.setNames.forEach(function(setName, i)
-		{
-			var set = JSON.parse(args[i]);
-			set.forEach(function(card) {
-				delete card.set;
-			});
-
-			allSets[setName] = set;
-
-			var setSize = printUtil.toSize(JSON.stringify(set).length, 0);
-			setSize = "&nbsp;".repeat(6-setSize.length) + setSize;
-
-			fs.writeFile(path.join(__dirname, "json", setName + ".json"), JSON.stringify(set), {encoding:"utf8"}, this.parallel());
-
-			dustData.sets.push({name : setName, size : setSize});
-		}.bind(this));
-
-		dustData.allSize = printUtil.toSize(JSON.stringify(allSets).length, 1);
-
-		dustData.changeLog = fs.readFileSync(path.join(__dirname, "changelog.html"), {encoding : "utf8"});
-
-		fs.writeFile(path.join(__dirname, "json", "AllSets.json"), JSON.stringify(allSets), {encoding : "utf8"}, this.parallel());
-		
-		fs.writeFile(path.join(__dirname, "json", "SetList.json"), JSON.stringify(Object.keys(allSets).sort()), {encoding : "utf8"}, this.parallel());
-		fs.writeFile(path.join(__dirname, "json", "version.json"), JSON.stringify({version:dustData.version}), {encoding : "utf8"}, this.parallel());
 	},
 	function verifyJSON()
 	{
+		base.info("Verifying JSON...");
+
 		checkCardDataTypes(this.data.setNames, this.parallel());
 	},
-	function zipJSON()
+	function saveOtherJSON()
 	{
-		runUtil.run("zip", ["-9", "AllSets.json.zip", "AllSets.json"], { cwd:  path.join(__dirname, "json"), silent : true }, this.parallel());
+		base.info("Saving other JSON...");
 
-		this.data.setNames.serialForEach(function(setName, cb)
-		{
-			runUtil.run("zip", ["-9", setName + ".json.zip", setName + ".json"], { cwd:  path.join(__dirname, "json"), silent : true }, cb);
-		}, this.parallel());
+		fs.writeFile(path.join(__dirname, "json", "SetList.json"), JSON.stringify(this.data.setNames.sort()), {encoding : "utf8"}, this.parallel());
+		fs.writeFile(path.join(__dirname, "json", "version.json"), JSON.stringify({version:dustData.version}), {encoding : "utf8"}, this.parallel());
 	},
 	function render()
 	{
-		dustData.allSizeZip = printUtil.toSize(fs.statSync(path.join(__dirname, "json", "AllSets.json.zip")).size, 1);
+		base.info("Rendering index...");
 
-		this.data.setNames.forEach(function(setName, i)
+		var newSets = [];
+		Object.forEach(dustData.sets, function(key, value) { value.name = key; newSets.push(value); });
+		dustData.sets = newSets;
+
+		var individualHTML = "";
+		var languages = C.LANGUAGES_FULL.multiSort([function(o) { return o.language; }, function(o) { return o.country; }]);
+		var NUM_PER_CELL = 4;
+		var NUM_COLS = Math.ceil(dustData.sets.length/NUM_PER_CELL);
+
+		languages.forEach(function(languageFull, langi)
 		{
-			dustData.sets[i].sizeZip = printUtil.toSize(fs.statSync(path.join(__dirname, "json", setName + ".json.zip")).size, 1);
+			var alternateClass = ((langi+1)%2)===0 ? " alternate" : "";
+			individualHTML += "\n<tr class='" + alternateClass + "'>\n\t<td rowspan='" + NUM_PER_CELL+ "'>" + languageFull.language + " (" + languageFull.country + ")</td>\n";
+			individualHTML += "\t<td rowspan='" + NUM_PER_CELL + "'>\n";
+			individualHTML += "<a href='json/AllSets." + languageFull.code + ".json'>AllSets." + languageFull.code + ".json</a><br><br>";
+			individualHTML += "<a href='json/AllSets." + languageFull.code + ".json.zip'>AllSets." + languageFull.code + ".json.zip</a>";
+			individualHTML += "</td>\n";
+
+			for(var i=0;i<dustData.sets.length;i++)
+			{
+				var set = dustData.sets[(Math.floor(i/NUM_COLS) + ((i%NUM_COLS)*NUM_PER_CELL))];
+				individualHTML += "\t<td class='setLinkContainer'><a href='json/" + set.name + "." + languageFull.code + ".json'>" + set.name + "." + languageFull.code + ".json</a></td>\n";
+				if(((i+1)%NUM_COLS===0))
+				{
+					individualHTML += "</tr>\n";
+					if(i!==(dustData.sets.length-1))
+						individualHTML += "<tr class='" + (((i+1+NUM_COLS)>=dustData.sets.length) ? "setContainerLast" : "") + alternateClass + "'>\n";
+				}
+			}
+
+			for(i=1;i<(dustData.sets.length%NUM_PER_CELL);i++)
+			{
+				individualHTML += "<td class='setLinkContainer'>&nbsp;</td>";
+			}
 		});
+		dustData.individualHeaderColSpan = NUM_COLS+2;
+		dustData.individualNumCols = NUM_COLS;
+
+		dustData.individualHTML = individualHTML;
 
 		dustUtil.render(__dirname, "index", dustData, { keepWhitespace : true }, this);
 	},
@@ -105,6 +125,7 @@ tiptoe(
 	{
 		if(err)
 		{
+			base.error(err.stack);
 			base.error(err);
 			process.exit(1);
 		}
@@ -112,6 +133,69 @@ tiptoe(
 		process.exit(0);
 	}
 );
+
+function processLanguage(setNames, language, cb)
+{
+	base.info("Processing language: %s", language);
+
+	var OUT_PATH = path.join(__dirname, "..", "out");
+	var WEB_OUT_PATH = path.join(__dirname, "json");
+	var setsSizeLang = {};
+
+	tiptoe(
+		function loadJSON()
+		{
+			setNames.forEach(function(setName)
+			{
+				fs.readFile(path.join(OUT_PATH, setName + "." + language + ".json"), {encoding : "utf8"}, this.parallel());
+			}.bind(this));
+		},
+		function saveSets()
+		{
+			var args=arguments;
+
+			var allSets = {};
+
+			setNames.forEach(function(setName, i)
+			{
+				var set = JSON.parse(args[i]);
+				set.forEach(function(card) {
+					delete card.set;
+				});
+
+				allSets[setName] = set;
+
+				fs.writeFile(path.join(WEB_OUT_PATH, setName + "." + language + ".json"), JSON.stringify(set), {encoding:"utf8"}, this.parallel());
+			}.bind(this));
+
+			var allSize = printUtil.toSize(JSON.stringify(allSets).length, 1);
+			if(language==="enUS")
+				dustData.allSize = allSize;
+			else
+				dustData.allSizeLangs.push({language:language, allSize : allSize});
+
+			fs.writeFile(path.join(__dirname, "json", "AllSets." + language + ".json"), JSON.stringify(allSets), {encoding : "utf8"}, this.parallel());
+		},
+		function zipAllSets()
+		{
+			runUtil.run("zip", ["-9", "AllSets." + language + ".json.zip", "AllSets." + language +  ".json"], { cwd:  WEB_OUT_PATH, silent : true }, this);
+		},
+		function getZipSizes()
+		{
+			var allSizeZip = printUtil.toSize(fs.statSync(path.join(WEB_OUT_PATH, "AllSets." + language + ".json.zip")).size, 1);
+			if(language==="enUS")
+				dustData.allSizeZip = allSizeZip;
+			else
+				dustData.allSizeZipLangs.push({language:language, allSizeZip : allSizeZip});
+
+			this();
+		},
+		function finish(err)
+		{
+			return setImmediate(function() { cb(err); });
+		}
+	);
+}
 
 function checkCardDataTypes(setNames, cb)
 {

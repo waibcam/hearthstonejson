@@ -7,3 +7,7 @@ rm disunity_v0.2.1.zip
 chmod 755 disunity/disunity.sh
 
 npm install
+
+cd node_modules
+ln -s ../shared/C.js
+cd ..

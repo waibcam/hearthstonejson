@@ -3,6 +3,7 @@
 
 var base = require("xbase"),
 	fs = require("fs"),
+	C = require("C"),
 	libxmljs = require("libxmljs"),
 	path = require("path"),
 	runUtil = require("xutil").run,
@@ -58,24 +59,19 @@ tiptoe(
 	function processCards(files)
 	{
 		base.info("Processing card XML...");
-		files.serialForEach(processCard, this);
+		C.LANGUAGES.serialForEach(function(language, cb)
+		{
+			files.serialForEach(function(file, subcb) { processCard(file, language, subcb); }, cb);
+		}, this);
 	},
 	function saveSets(cards)
 	{
-		var sets = {};
+		base.info("Saving JSON...");
 
-		cards.forEach(function(card)
+		C.LANGUAGES.serialForEach(function(language, cb, i)
 		{
-			var cardSet = card.set;
-			if(!sets.hasOwnProperty(cardSet))
-				sets[cardSet] = [];
-			sets[cardSet].push(card);
-		});
-
-		Object.forEach(sets, function(setName, cards)
-		{
-			fs.writeFile(path.join(OUT_PATH, setName + ".json"), JSON.stringify(cards.sort(function(a, b) { return a.name.localeCompare(b.name); })), {encoding:"utf8"}, this.parallel());
-		}.bind(this));
+			saveSet(cards[i], language, cb);
+		}, this);
 	},
 	function cleanup()
 	{
@@ -96,7 +92,36 @@ tiptoe(
 	}
 );
 
-function processCard(cardXMLPath, cb)
+function saveSet(cards, language, cb)
+{
+	var sets = {};
+
+	base.info("Saving %d cards for language: %s", cards.length, language);
+
+	cards.forEach(function(card)
+	{
+		var cardSet = card.set;
+		if(!sets.hasOwnProperty(cardSet))
+			sets[cardSet] = [];
+		sets[cardSet].push(card);
+	});
+
+	tiptoe(
+		function saveFiles()
+		{
+			Object.forEach(sets, function(setName, cards)
+			{
+				fs.writeFile(path.join(OUT_PATH, setName + "." + language + ".json"), JSON.stringify(cards.sort(function(a, b) { return a.name.localeCompare(b.name); })), {encoding:"utf8"}, this.parallel());
+			}.bind(this));
+		},
+		function finish(err)
+		{
+			return setImmediate(function() { cb(err); });
+		}
+	);
+}
+
+function processCard(cardXMLPath, language, cb)
 {
 	var card = {};
 
@@ -111,25 +136,25 @@ function processCard(cardXMLPath, cb)
 			var Entity = xmlDoc.get("/Entity");
 
 			card.id = Entity.attr("CardID").value();
-			card.name = getTagValue(Entity, "CardName");
-			card.set = getTagValue(Entity, "CardSet");
-			card.type = getTagValue(Entity, "CardType");
-			card.faction = getTagValue(Entity, "Faction");
-			card.rarity = getTagValue(Entity, "Rarity");
-			card.cost = getTagValue(Entity, "Cost");
-			card.attack = getTagValue(Entity, "Atk");
-			card.health = getTagValue(Entity, "Health");
-			card.durability = getTagValue(Entity, "Durability");
-			card.text = getTagValue(Entity, "CardTextInHand");
-			card.inPlayText = getTagValue(Entity, "CardTextInPlay");
-			card.flavor = getTagValue(Entity, "FlavorText");
-			card.artist = getTagValue(Entity, "ArtistName");
-			card.collectible = getTagValue(Entity, "Collectible");
-			card.elite = getTagValue(Entity, "Elite");
-			card.race = getTagValue(Entity, "Race");
-			card.playerClass = getTagValue(Entity, "Class");
-			card.howToGet = getTagValue(Entity, "HowToGetThisCard");
-			card.howToGetGold = getTagValue(Entity, "HowToGetThisGoldCard");
+			card.name = getTagValue(Entity, "CardName", language);
+			card.set = getTagValue(Entity, "CardSet", language);
+			card.type = getTagValue(Entity, "CardType", language);
+			card.faction = getTagValue(Entity, "Faction", language);
+			card.rarity = getTagValue(Entity, "Rarity", language);
+			card.cost = getTagValue(Entity, "Cost", language);
+			card.attack = getTagValue(Entity, "Atk", language);
+			card.health = getTagValue(Entity, "Health", language);
+			card.durability = getTagValue(Entity, "Durability", language);
+			card.text = getTagValue(Entity, "CardTextInHand", language);
+			card.inPlayText = getTagValue(Entity, "CardTextInPlay", language);
+			card.flavor = getTagValue(Entity, "FlavorText", language);
+			card.artist = getTagValue(Entity, "ArtistName", language);
+			card.collectible = getTagValue(Entity, "Collectible", language);
+			card.elite = getTagValue(Entity, "Elite", language);
+			card.race = getTagValue(Entity, "Race", language);
+			card.playerClass = getTagValue(Entity, "Class", language);
+			card.howToGet = getTagValue(Entity, "HowToGetThisCard", language);
+			card.howToGetGold = getTagValue(Entity, "HowToGetThisGoldCard", language);
 
 			Object.keys(card).forEach(function(key)
 			{
@@ -149,7 +174,7 @@ function processCard(cardXMLPath, cb)
 	);
 }
 
-function getTagValue(Entity, tagName)
+function getTagValue(Entity, tagName, language)
 {
 	var Tag = Entity.get("Tag[@name='" + tagName + "']");
 	if(!Tag)
@@ -157,7 +182,12 @@ function getTagValue(Entity, tagName)
 
 	var type = Tag.attr("type").value();
 	if(type==="String")
-		return Tag.get("enUS").text().trim();
+	{
+		var stringTag = Tag.get(language);
+		if(!stringTag)
+			stringTag = Tag.get("enUS");
+		return stringTag.text().trim();
+	}
 
 	var value = Tag.attr("value").value();
 

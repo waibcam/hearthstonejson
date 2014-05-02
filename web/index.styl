@@ -98,6 +98,10 @@ table.downloadsAll
 		&.sizeColLeft
 			padding-right 0
 
+.flag
+	vertical-align middle
+	margin-right 0.5em
+
 table.downloads
 	tr:first-child th
 		font-size 140%
@@ -130,15 +134,29 @@ table.downloads
 			border-top 0
 
 table.downloadsIndividual
-	td:first-child
-		text-align left
-
 	td
+		text-align left
 		white-space nowrap
 		width auto
 
+		&.setLinkContainer
+			border 0
+			text-align right
+
 		.size
 			margin-left 0
+
+		a
+			min-width 40.0em
+
+	tr.setContainerLast td
+		border-bottom 1px solid black
+
+	tr.alternate td
+		background-color #003b46
+
+	td:last-child
+		border-right 1px solid black
 
 
 table.symbols

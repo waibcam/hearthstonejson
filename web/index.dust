@@ -23,7 +23,7 @@
 		<center><h1 style="font-size: 240%;">Hearthstone JSON</h1></center>
 		<p style="margin-top: 1.0em;">This project provides up to date <a href="http://us.battle.net/hearthstone/en/">Hearthstone</a> card data in <a href="http://www.json.org/">JSON</a> format for developers to easily use in their projects.<br>
 		<br>
-		For more details see: <a href="#exampleCard">Example Card</a> and <a href="#documentation">Documentation</a><br>
+		For more details see: <a href="#exampleCard">Example Card</a> and <a href="#documentation">Documentation</a> and <a href="http://www.reddit.com/r/hearthstone/comments/24i5o1/hearthsone_json_new_website_provides_hearthstone/">Reddit Thread</a><br>
 		<br>
 		Any bugs or feedback, e-mail me at <a href="mailto:robert@cosmicrealms.com">robert@cosmicrealms.com</a><br>
 		</p>
@@ -38,7 +38,7 @@
 		<table class="downloads downloadsAll">
 			<thead>
 				<tr>
-					<th colspan="2">Download Card Data</th>
+					<th colspan="2">Download Card Data<br><span style="font-size: 60%;">(English)</span></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -59,7 +59,7 @@
 					</td>
 				</tr>
 				<tr>
-					<td colspan="2" style="white-space: nowrap; font-size: 150%; padding-top: 1em; padding-bottom: 1em;"><a href="#individualSets">Click Here for Individual Sets</a></td>
+					<td colspan="2" style="white-space: nowrap; font-size: 150%; padding-top: 1em; padding-bottom: 1em;"><a href="#individualSets">Individual Sets and Other Languages</a></td>
 				</tr>
 			</tbody>
 		</table>
@@ -154,12 +154,12 @@
 				<tr>
 					<td>text</td>
 					<td>"&lt;b&gt;Enrage:&lt;/b&gt; +3 Attack"</td>
-					<td>The text of the card when it is in your hand. May contain HTML tags and other symbols.</td>
+					<td>The text of the card when it is in your hand. May contain HTML tags and other symbols which are present in the Hearthstones files as presented here.</td>
 				</tr>
 				<tr>
 					<td>inPlayText</td>
 					<td>"For the Alliance!"</td>
-					<td>The text of the card when it is in play. May contain HTML tags and other symbols.</td>
+					<td>The text of the card when it is in play. May contain HTML tags and other symbols which are present in the Hearthstones files as presented here.</td>
 				</tr>
 				<tr>
 					<td>flavor</td>
@@ -238,37 +238,20 @@
 		</table>
 		<hr>
 		<a name="individualSets"></a>
-		<h1>Individual Sets<a href="#top">(back to top)</a></h1>
+		<h1>Individual Sets and Other Languages<a href="#top">(back to top)</a></h1>
 		<table class="downloads downloadsIndividual">
 			<thead>
 				<tr>
-					<th colspan="5">Individual Sets</th>
+					<th colspan="{individualHeaderColSpan}">Individual Sets and Other Languages</th>
 				</tr>
 				<tr>
-					<th>Name</th>
-					<th colspan="2">Card Data</th>
+					<th>Language</th>
+					<th>All Sets</th>
+					<th colspan="{individualNumCols}">Individual Sets</th>
 				</tr>
 			</thead>
 			<tbody>
-				{#sets}
-					<tr class="firstRow">
-						<td rowspan="2">{name}</td>
-						<td class="sizeColLeft">
-							<a href="json/{name}.json">{name}.json</a>
-						</td>
-						<td class="sizeColRight">
-							<span class="size">{size|s}</span>
-						</td>
-					</tr>
-					<tr class="secondRow">
-						<td class="sizeColLeft">
-							<a href="json/{name}.json.zip">{name}.json.zip</a>
-						</td>
-						<td class="sizeColRight">
-							<span class="size">{sizeZip|s}</span>
-						</td>
-					</tr>
-				{/sets}
+				{individualHTML|s}
 			</tbody>
 		</table>
 		<hr>
