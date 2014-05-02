@@ -82,7 +82,7 @@ tiptoe(
 		base.info("Cleaning up...");
 		fs.unlink(path.join(OUT_PATH, MPQ_FILE_NAME), this.parallel());
 		fs.unlink(path.join(OUT_PATH, CARDXML_FILE_NAME), this.parallel());
-		//rimraf(path.join(OUT_PATH, CARDXML_DIR_NAME), this.parallel());
+		rimraf(path.join(OUT_PATH, CARDXML_DIR_NAME), this.parallel());
 	},
 	function finish(err)
 	{
