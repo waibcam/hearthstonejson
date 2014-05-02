@@ -72,8 +72,6 @@ tiptoe(
 			sets[cardSet].push(card);
 		});
 
-		fs.writeFile(path.join(OUT_PATH, "AllCards.json"), JSON.stringify(cards.sort(function(a, b) { return a.name.localeCompare(b.name); })), {encoding:"utf8"}, this.parallel());
-
 		Object.forEach(sets, function(setName, cards)
 		{
 			fs.writeFile(path.join(OUT_PATH, setName + ".json"), JSON.stringify(cards.sort(function(a, b) { return a.name.localeCompare(b.name); })), {encoding:"utf8"}, this.parallel());
@@ -84,7 +82,7 @@ tiptoe(
 		base.info("Cleaning up...");
 		fs.unlink(path.join(OUT_PATH, MPQ_FILE_NAME), this.parallel());
 		fs.unlink(path.join(OUT_PATH, CARDXML_FILE_NAME), this.parallel());
-		rimraf(path.join(OUT_PATH, CARDXML_DIR_NAME), this.parallel());
+		//rimraf(path.join(OUT_PATH, CARDXML_DIR_NAME), this.parallel());
 	},
 	function finish(err)
 	{
@@ -121,6 +119,7 @@ function processCard(cardXMLPath, cb)
 			card.cost = getTagValue(Entity, "Cost");
 			card.attack = getTagValue(Entity, "Atk");
 			card.health = getTagValue(Entity, "Health");
+			card.durability = getTagValue(Entity, "Durability");
 			card.text = getTagValue(Entity, "CardTextInHand");
 			card.inPlayText = getTagValue(Entity, "CardTextInPlay");
 			card.flavor = getTagValue(Entity, "FlavorText");

@@ -1,0 +1,284 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!--[if IE]><![endif]-->
+<html>
+	<head>
+		<title>{title}</title>
+		<script>
+			(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+			})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+			ga('create', 'UA-26058758-6', 'hearthstonejson.com');
+			ga('send', 'pageview');
+		</script>
+		<link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon"> 
+		<link type="text/css" rel="stylesheet" href="index.css">
+		<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+		<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+		<link type="text/css" rel="stylesheet" href="solarized-dark.css">
+	</head>
+	<body><a name="top"></a>
+		<script type="text/javascript" src="rainbow-custom.min.js"></script>
+		<center><h1 style="font-size: 240%;">Hearthstone JSON</h1></center>
+		<p style="margin-top: 1.0em;">This project provides up to date <a href="http://us.battle.net/hearthstone/en/">Hearthstone</a> card data in <a href="http://www.json.org/">JSON</a> format for developers to easily use in their projects.<br>
+		<br>
+		For more details see: <a href="#exampleCard">Example Card</a> and <a href="#documentation">Documentation</a><br>
+		<br>
+		Any bugs or feedback, e-mail me at <a href="mailto:robert@cosmicrealms.com">robert@cosmicrealms.com</a><br>
+		</p>
+		<br>
+		<br>
+		<h2>Current Version: <span class="value">{version}</span></h2>
+		<h2>&nbsp;&nbsp;&nbsp;Last Updated: <span class="value">{lastUpdated}</span><a href="#changeLog">(change log)</a></h2>
+		<br>
+		<br>
+		<h2 style="display: none;"><span style="color: red; text-decoration: underline;">ALERT:</span> alert message goes here</h2>
+		<br>
+		<table class="downloads downloadsAll">
+			<thead>
+				<tr>
+					<th colspan="2">Download Card Data</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td class="sizeColLeft">
+						<a href="json/AllSets.json">AllSets.json</a>
+					</td>
+					<td class="sizeColRight">
+						<span class="size">{allSize}</span>
+					</td>
+				</tr>
+				<tr>
+					<td class="sizeColLeft">
+						<a href="json/AllSets.json.zip">AllSets.json.zip</a>
+					</td>
+					<td class="sizeColRight">
+						<span class="size">{allSizeZip}</span>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2" style="white-space: nowrap; font-size: 150%; padding-top: 1em; padding-bottom: 1em;"><a href="#individualSets">Click Here for Individual Sets</a></td>
+				</tr>
+			</tbody>
+		</table>
+		<br>
+		<hr>
+		<a name="exampleCard"></a>
+		<h1>Example Card<a href="#top">(back to top)</a></h1>
+		<img src="images/leeroy.png" id="cardExample">
+		<pre id="cardExampleCode"><code data-language="javascript">
+    {
+             name : "Leeroy Jenkins",
+
+             cost : 4,
+
+             type : "Minion",
+           rarity : "Legendary",
+          faction : "Alliance",
+
+             text : "<b>Charge</b>. <b>Battlecry:</b> Summon two 1/1 Whelps for your opponent.",
+
+           flavor : "At least he has Angry Chicken.",
+
+           artist : "Gabe from Penny Arcade",
+
+           attack : 6,
+           health : 2,
+
+      collectible : true,
+               id : "EX1_116",
+            elite : true
+    }
+		</code></pre>
+		<hr>
+		<a name="documentation"></a>
+		<h1>Documentation<a href="#top">(back to top)</a></h1>
+		<p>All JSON files are UTF8 encoded and may contain UTF8 characters.<br>
+		<br>The 'AllSets.json' file is an object where each key is the set name and the value is an array of the cards in that set.<br>
+		<br>Each individual set file is a JSON array of the cards cards in that set.<br>
+		<br>Each card is a JSON object with key/value pairs. Below you will find a table detailing each key.<br>
+		<br>
+		The cards are sorted by 'name'<br>
+		<br>
+		If a value would be empty (such as playerClass for Neutral cards), then the key will not exist in the object.<br>
+		<br>
+		All card data is extracted directly from the Hearthstone game files.<br>
+		<br>
+		</p>
+		<table>
+			<thead>
+				<tr>
+					<th>Key</th>
+					<th>Example</th>
+					<th>Description</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>name</td>
+					<td>"Leeroy Jenkins"</td>
+					<td>The card name.</td>
+				</tr>
+				<tr>
+					<td>cost</td>
+					<td>4</td>
+					<td>The mana cost of this card.</td>
+				</tr>
+				<tr>
+					<td>type</td>
+					<td>"minion"</td>
+					<td>The card type. Example values: Minion, Spell, Weapon, Hero, Hero Power, Enchantment</td>
+				</tr>
+				<tr>
+					<td>rarity</td>
+					<td>"Legendary"</td>
+					<td>The rarity of the card. Example values: Free, Common, Rare, Epic, Legendary</td>
+				</tr>
+				<tr>
+					<td>faction</td>
+					<td>"Alliance"</td>
+					<td>The faction of the card. Example values: Alliance, Horde, Neutral</td>
+				</tr>
+				<tr>
+					<td>race</td>
+					<td>"Beast"</td>
+					<td>The race of the card. Example values: Murloc, Demon, Beast, Totem, Pirate, Dragon</td>
+				</tr>
+				<tr>
+					<td>playerClass</td>
+					<td>"Mage"</td>
+					<td>The player class this card belongs to. Example values: Druid, Hunter, Mage, Paladin</td>
+				</tr>
+				<tr>
+					<td>text</td>
+					<td>"&lt;b&gt;Enrage:&lt;/b&gt; +3 Attack"</td>
+					<td>The text of the card when it is in your hand. May contain HTML tags and other symbols.</td>
+				</tr>
+				<tr>
+					<td>inPlayText</td>
+					<td>"For the Alliance!"</td>
+					<td>The text of the card when it is in play. May contain HTML tags and other symbols.</td>
+				</tr>
+				<tr>
+					<td>flavor</td>
+					<td>"Always roll need."</td>
+					<td>The flavor text of the card.</td>
+				</tr>
+				<tr>
+					<td>artist</td>
+					<td>"Gabe from Penny Arcade"</td>
+					<td>The artist of the card.</td>
+				</tr>
+				<tr>
+					<td>attack</td>
+					<td>6</td>
+					<td>The attack of the card. Used for both Minions and Weapons.</td>
+				</tr>
+				<tr>
+					<td>health</td>
+					<td>2</td>
+					<td>The health of the card. Used for Minions.</td>
+				</tr>
+				<tr>
+					<td>durability</td>
+					<td>3</td>
+					<td>The durability of the card. Used for Weapons.</td>
+				</tr>
+				<tr>
+					<td>id</td>
+					<td>"EX1_116"</td>
+					<td>The Hearthstone ID of the card.</td>
+				</tr>
+				<tr>
+					<td>collectible</td>
+					<td>true</td>
+					<td>If this card can be acquired by the player, this is true. false otherwise.</td>
+				</tr>
+				<tr>
+					<td>elite</td>
+					<td>true</td>
+					<td>Whether or not this card is elite.</td>
+				</tr>
+				<tr>
+					<td>howToGet</td>
+					<td>"Unlocked at Level 1."</td>
+					<td>How to get this card. Only present if it's gotten via a method other than opening a booster pack.</td>
+				</tr>
+				<tr>
+					<td>howToGetGold</td>
+					<td>"Unlocked at Level 40."</td>
+					<td>How to get the gold version of this card. Only present if it's gotten via a method other than opening a booster pack.</td>
+				</tr>
+			</tbody>
+		</table>
+		<hr>
+		<a name="additionalJSON"></a>
+		<h1>Additional JSON Files<a href="#top">(back to top)</a></h1>
+		<p>These JSON files are updated whenever card data is added or updated:</p>
+		<ul>
+			<li><a href="/json/SetList.json">/json/SetList.json</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;An array of set names currently available</li>
+			<li><a href="/json/version.json">/json/version.json</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Current version number for the JSON files</li>
+		</ul>
+		<br>
+		<br>
+		<hr>
+		<a name="changeLog"></a>
+		<h1>Change Log<a href="#top">(back to top)</a></h1>
+		<table class="changeLog">
+			<thead>
+				<tr>
+					<th>Version</th>
+					<th>Date</th>
+					<th>Changes</th>
+				</tr>
+			</thead>
+			<tbody>{changeLog|s}</tbody>
+		</table>
+		<hr>
+		<a name="individualSets"></a>
+		<h1>Individual Sets<a href="#top">(back to top)</a></h1>
+		<table class="downloads downloadsIndividual">
+			<thead>
+				<tr>
+					<th colspan="5">Individual Sets</th>
+				</tr>
+				<tr>
+					<th>Name</th>
+					<th colspan="2">Card Data</th>
+				</tr>
+			</thead>
+			<tbody>
+				{#sets}
+					<tr class="firstRow">
+						<td rowspan="2">{name}</td>
+						<td class="sizeColLeft">
+							<a href="json/{name}.json">{name}.json</a>
+						</td>
+						<td class="sizeColRight">
+							<span class="size">{size|s}</span>
+						</td>
+					</tr>
+					<tr class="secondRow">
+						<td class="sizeColLeft">
+							<a href="json/{name}.json.zip">{name}.json.zip</a>
+						</td>
+						<td class="sizeColRight">
+							<span class="size">{sizeZip|s}</span>
+						</td>
+					</tr>
+				{/sets}
+			</tbody>
+		</table>
+		<hr>
+		<a name="license"></a>
+		<h1>License and Copyright<a href="#top">(back to top)</a></h1>
+		<p>Card names and text are all copyright Blizzard Entertainment.<br>
+		<br>
+		This website is not affiliated with Blizzard Entertainment in any way.<br>
+		<br>
+		I am providing the JSON files under the public domain license.<br>
+		<br></p>
+	</body>
+</html>

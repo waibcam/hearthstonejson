@@ -3,3 +3,5 @@ hearthstonejson.sublime-project
 hearthstonejson.sublime-workspace
 out
 disunity
+deploy
+nginx

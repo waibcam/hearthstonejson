@@ -1,0 +1,22 @@
+/---------------\
+| High Priority |
+\---------------/
+* Finish proofreading hearthstone json, then launch
+
+
+/-----------------\
+| Medium Priority |
+\-----------------/
+
+
+/--------------\
+| Low Priority |
+\--------------/
+
+
+
+/-----------------\
+| Lowest Priority |
+\-----------------/
+
+
