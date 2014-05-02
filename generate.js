@@ -74,8 +74,7 @@ tiptoe(
 	function cleanup()
 	{
 		base.info("Cleaning up...");
-		//rimraf(OUT_PATH_TO_EXTRACTED_DATA, this);
-		this();
+		rimraf(OUT_PATH_TO_EXTRACTED_DATA, this);
 	},
 	function finish(err)
 	{
