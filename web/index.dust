@@ -279,6 +279,12 @@
 		This website is not affiliated with Blizzard Entertainment in any way.<br>
 		<br>
 		I am providing the JSON files under the public domain license.<br>
-		<br></p>
+		<br>
+		</p>
+		<hr>
+		<h1>Source Code<a href="#top">(back to top)</a></h1>
+		<p>Source code used to generate the JSON is available here: <a href="https://github.com/Sembiance/hearthstonejson">https://github.com/Sembiance/hearthstonejson</a><br>
+		<br>
+		</p>
 	</body>
 </html>

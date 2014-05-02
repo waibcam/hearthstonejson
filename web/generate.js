@@ -17,7 +17,7 @@ var dustData =
 	title : "Hearthstone card data in JSON format",
 	sets  : [],
 	version : "1.0.0",
-	lastUpdated : "May 2, 2014"
+	lastUpdated : "May 1, 2014"
 };
 
 tiptoe(

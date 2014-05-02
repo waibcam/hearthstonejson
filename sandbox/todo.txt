@@ -1,7 +1,6 @@
 /---------------\
 | High Priority |
 \---------------/
-* Finish proofreading hearthstone json, then launch
 
 
 /-----------------\
