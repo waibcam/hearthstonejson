@@ -18,12 +18,14 @@ if(process.argv.length<3 || !fs.existsSync(process.argv[2]))
 	process.exit(1);
 }
 
-var MPQ_ORIGINAL_PATH = process.argv[2];
+var MPQ_PATH = process.argv[2];
 var MPQ_FILE_NAME = "base-Win.MPQ";
 var OUT_PATH = path.join(__dirname, "out");
+var OUT_PATH_TO_EXTRACTED_DATA = path.join(OUT_PATH, "Data");
+var OUT_PATH_TO_CARDXML = path.join(OUT_PATH_TO_EXTRACTED_DATA, "Win");
 var CARDXML_FILE_NAME = "cardxml0.unity3d";
 var CARDXML_DIR_NAME = path.basename(CARDXML_FILE_NAME, path.extname(CARDXML_FILE_NAME));
-var MPQEDITOR_PATH = path.join(__dirname, "MPQEditor.exe");
+var MPQEXTRACTOR_PATH = path.join(__dirname, "MPQExtractor", "build", "bin", "MPQExtractor");
 var DISUNITY_PATH = path.join(__dirname, "disunity", "disunity.sh");
 
 tiptoe(
@@ -36,25 +38,20 @@ tiptoe(
 	{
 		fs.mkdir(OUT_PATH, this);
 	},
-	function copyMPQ()
-	{
-		base.info("Copying MPQ to 'out' directory...");
-		fileUtil.copy(MPQ_ORIGINAL_PATH, path.join(OUT_PATH, MPQ_FILE_NAME), this);
-	},
 	function extractMPQ()
 	{
 		base.info("Extracting MPQ...");
-		runUtil.run("wine", [MPQEDITOR_PATH, "/extract", path.join("out", MPQ_FILE_NAME), "Data\\Win\\" + CARDXML_FILE_NAME, "out"], {cwd:__dirname, silent : true}, this);
+		runUtil.run(MPQEXTRACTOR_PATH, ["-e", "Data\\Win\\" + CARDXML_FILE_NAME, "-f", "-o", OUT_PATH, MPQ_PATH], this);
 	},
 	function extractCardXMLIfNeeded()
 	{
 		base.info("Extracting card XML...");
-		runUtil.run(DISUNITY_PATH, ["-c", "extract", CARDXML_FILE_NAME], {cwd:OUT_PATH, silent : true}, this);
+		runUtil.run(DISUNITY_PATH, ["-c", "extract", CARDXML_FILE_NAME], {cwd:OUT_PATH_TO_CARDXML, silent : true}, this);
 	},
 	function getCards()
 	{
 		base.info("Finding card XML...");
-		glob(path.join(OUT_PATH, CARDXML_DIR_NAME, "TextAsset", "*.txt"), this);
+		glob(path.join(OUT_PATH_TO_CARDXML, CARDXML_DIR_NAME, "TextAsset", "*.txt"), this);
 	},
 	function processCards(files)
 	{
@@ -76,9 +73,7 @@ tiptoe(
 	function cleanup()
 	{
 		base.info("Cleaning up...");
-		fs.unlink(path.join(OUT_PATH, MPQ_FILE_NAME), this.parallel());
-		fs.unlink(path.join(OUT_PATH, CARDXML_FILE_NAME), this.parallel());
-		rimraf(path.join(OUT_PATH, CARDXML_DIR_NAME), this.parallel());
+		rimraf(OUT_PATH_TO_EXTRACTED_DATA, this);
 	},
 	function finish(err)
 	{
