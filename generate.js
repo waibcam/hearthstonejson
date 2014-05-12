@@ -14,7 +14,7 @@ var base = require("xbase"),
 
 if(process.argv.length<3 || !fs.existsSync(process.argv[2]))
 {
-	base.error("Usage: node generate.js /path/to/base-Win.MPQ");
+	base.error("Usage: node generate.js /path/to/base-Win.MPQ or /path/to/cardxml0.unity3d");
 	process.exit(1);
 }
 
@@ -40,8 +40,16 @@ tiptoe(
 	},
 	function extractMPQ()
 	{
-		base.info("Extracting MPQ...");
-		runUtil.run(MPQEXTRACTOR_PATH, ["-e", "Data\\Win\\" + CARDXML_FILE_NAME, "-f", "-o", OUT_PATH, MPQ_PATH], this);
+		if(MPQ_PATH.endsWith("unity3d"))
+		{
+			OUT_PATH_TO_CARDXML = OUT_PATH;
+			fileUtil.copy(MPQ_PATH, path.join(OUT_PATH, path.basename(MPQ_PATH)), this);
+		}
+		else
+		{
+			base.info("Extracting MPQ...");
+			runUtil.run(MPQEXTRACTOR_PATH, ["-e", "Data\\Win\\" + CARDXML_FILE_NAME, "-f", "-o", OUT_PATH, MPQ_PATH], this);
+		}
 	},
 	function extractCardXMLIfNeeded()
 	{
@@ -74,7 +82,14 @@ tiptoe(
 	function cleanup()
 	{
 		base.info("Cleaning up...");
-		rimraf(OUT_PATH_TO_EXTRACTED_DATA, this);
+		if(fs.existsSync(OUT_PATH_TO_EXTRACTED_DATA))
+			rimraf(OUT_PATH_TO_EXTRACTED_DATA, this.parallel());
+		if(fs.existsSync(path.join(OUT_PATH, CARDXML_DIR_NAME)))
+			rimraf(path.join(OUT_PATH, CARDXML_DIR_NAME), this.parallel());
+		if(fs.existsSync(path.join(OUT_PATH, CARDXML_FILE_NAME)))
+			fs.unlink(path.join(OUT_PATH, CARDXML_FILE_NAME), this.parallel());
+
+		this.parallel()();
 	},
 	function finish(err)
 	{
@@ -99,6 +114,9 @@ function saveSet(cards, language, cb)
 		var cardSet = card.set;
 		if(!sets.hasOwnProperty(cardSet))
 			sets[cardSet] = [];
+
+		fixCard(language, card);
+
 		sets[cardSet].push(card);
 	});
 
@@ -115,6 +133,15 @@ function saveSet(cards, language, cb)
 			return setImmediate(function() { cb(err); });
 		}
 	);
+}
+
+function fixCard(language, card)
+{
+	if(["Minion", "Weapon"].contains(card.type) && !card.hasOwnProperty("cost"))
+	{
+		console.log("Fixing missing cost %s \"%s\"", card.type, card.name);
+		card.cost = 0;
+	}
 }
 
 var USED_TAGS = ["CardID", "CardName", "CardSet", "CardType", "Faction", "Rarity", "Cost", "Atk", "Health", "Durability", "CardTextInHand", "CardTextInPlay", "FlavorText", "ArtistName", "Collectible",

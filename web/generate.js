@@ -17,8 +17,9 @@ var dustData =
 {
 	title           : "Hearthstone card data in JSON format",
 	sets            : {},	// Later changed to []
-	version         : "1.2.0",
-	lastUpdated     : "May 2, 2014",
+	version         : "1.2.1",
+	patchVersion    : "1.0.0.5314",
+	lastUpdated     : "May 12, 2014",
 	allSizeLangs    : [],
 	allSizeZipLangs : [],
 	changeLog       : fs.readFileSync(path.join(__dirname, "changelog.html"), {encoding : "utf8"})
