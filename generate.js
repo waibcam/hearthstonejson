@@ -63,7 +63,7 @@ tiptoe(
 	},
 	function processCards(files)
 	{
-		base.info("Processing card XML...");
+		base.info("Processing %d card XML files...", files.length);
 		C.LANGUAGES.serialForEach(function(language, cb)
 		{
 			base.info("Processing language: %s", language);
@@ -146,7 +146,7 @@ function fixCard(language, card)
 
 var USED_TAGS = ["CardID", "CardName", "CardSet", "CardType", "Faction", "Rarity", "Cost", "Atk", "Health", "Durability", "CardTextInHand", "CardTextInPlay", "FlavorText", "ArtistName", "Collectible",
 				 "Elite", "Race", "Class", "HowToGetThisCard", "HowToGetThisGoldCard"];
-var IGNORED_TAGS = ["AttackVisualType", "EnchantmentBirthVisual", "EnchantmentIdleVisual", "TargetingArrowText", "DevState", "TriggerVisual", "Recall"];
+var IGNORED_TAGS = ["AttackVisualType", "EnchantmentBirthVisual", "EnchantmentIdleVisual", "TargetingArrowText", "DevState", "TriggerVisual", "Recall", "AIMustPlay", "InvisibleDeathrattle"];
 var MECHANIC_TAGS = ["Windfury", "Combo", "Secret", "Battlecry", "Deathrattle", "Taunt", "Stealth", "Spellpower", "Enrage", "Freeze", "Charge", "Overload", "Divine Shield", "Silence", "Morph", "OneTurnEffect", "Poisonous", "Aura", "AdjacentBuff",
 					"HealTarget", "GrantCharge", "ImmuneToSpellpower", "AffectedBySpellPower", "Summoned"];
 var KNOWN_TAGS = USED_TAGS.concat(IGNORED_TAGS, MECHANIC_TAGS);
@@ -274,6 +274,7 @@ var TAG_VALUE_MAPS =
 		7 : "System",
 		8 : "Debug",
 		11 : "Promotion",
+		12 : "Curse of Naxxramas",
 		16 : "Credits"
 	},
 	"CardType" :
@@ -293,6 +294,7 @@ var TAG_VALUE_MAPS =
 	},
 	"Rarity" :
 	{
+		0 : undefined,
 		1 : "Common",
 		2 : "Free",
 		3 : "Rare",
@@ -310,6 +312,7 @@ var TAG_VALUE_MAPS =
 	},
 	"Class" :
 	{
+		0 : undefined,
 		2 : "Druid",
 		3 : "Hunter",
 		4 : "Mage",

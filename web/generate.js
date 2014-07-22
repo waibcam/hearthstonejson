@@ -17,9 +17,9 @@ var dustData =
 {
 	title           : "Hearthstone card data in JSON format",
 	sets            : {},	// Later changed to []
-	version         : "1.2.1",
-	patchVersion    : "1.0.0.5314",
-	lastUpdated     : "May 12, 2014",
+	version         : "2.0.0",
+	patchVersion    : "1.1.0.5997",
+	lastUpdated     : "Jul 22, 2014",
 	allSizeLangs    : [],
 	allSizeZipLangs : [],
 	changeLog       : fs.readFileSync(path.join(__dirname, "changelog.html"), {encoding : "utf8"})
@@ -82,7 +82,7 @@ tiptoe(
 
 		var individualHTML = "";
 		var languages = C.LANGUAGES_FULL.multiSort([function(o) { return o.language; }, function(o) { return o.country; }]);
-		var NUM_PER_CELL = 4;
+		var NUM_PER_CELL = 5;
 		var NUM_COLS = Math.ceil(dustData.sets.length/NUM_PER_CELL);
 
 		languages.forEach(function(languageFull, langi)
@@ -106,7 +106,7 @@ tiptoe(
 				}
 			}
 
-			for(i=1;i<(dustData.sets.length%NUM_PER_CELL);i++)
+			for(i=1;i<(dustData.sets.length/NUM_PER_CELL);i++)
 			{
 				individualHTML += "<td class='setLinkContainer'>&nbsp;</td>";
 			}

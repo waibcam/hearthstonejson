@@ -53,6 +53,12 @@ function processFile(fileName, cb)
 		},
 		function compare(oldJSONArgs, newJSON)
 		{
+			if(oldJSONArgs[0].statusCode===404)
+			{
+				base.info("Skipping %s do to being missing on production.", fileName);
+				return this();
+			}
+
 			var result = compareSets(JSON.parse(oldJSONArgs[1]), JSON.parse(newJSON));
 			if(result)
 				console.log(result);
