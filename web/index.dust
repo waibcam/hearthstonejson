@@ -60,6 +60,25 @@
 					</td>
 				</tr>
 				<tr>
+					<th colspan="2"><br><span style="font-size: 70%;">(All Languages)</span></th>
+				</tr>
+				<tr>
+					<td class="sizeColLeft">
+						<a href="json/AllSetsAllLanguages.json">AllSetsAllLanguages.json</a>
+					</td>
+					<td class="sizeColRight">
+						<span class="size">{allSetsAllLanguagesSize}</span>
+					</td>
+				</tr>
+				<tr>
+					<td class="sizeColLeft">
+						<a href="json/AllSetsAllLanguages.json.zip">AllSetsAllLanguages.json.zip</a>
+					</td>
+					<td class="sizeColRight">
+						<span class="size">{allSetsAllLanguagesSizeZip}</span>
+					</td>
+				</tr>
+				<tr>
 					<td colspan="2" style="white-space: nowrap; font-size: 150%; padding-top: 1em; padding-bottom: 1em;"><a href="#individualSets">Individual Sets and Other Languages</a></td>
 				</tr>
 			</tbody>
@@ -136,7 +155,9 @@
 				<tr>
 					<td>rarity</td>
 					<td>"Legendary"</td>
-					<td>The rarity of the card. Example values: Free, Common, Rare, Epic, Legendary</td>
+					<td>The rarity of the card. Example values: Free, Common, Rare, Epic, Legendary<br>
+					Note: Hearthstone internally uses 'Common' rarity on several cards in the Basic set that are obtained for free.<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Thus these cards show a 'Common' rarity even though the player gets them freely.</td>
 				</tr>
 				<tr>
 					<td>faction</td>

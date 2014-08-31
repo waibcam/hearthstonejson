@@ -25,14 +25,17 @@ var dustData =
 	changeLog       : fs.readFileSync(path.join(__dirname, "changelog.html"), {encoding : "utf8"})
 };
 
+var WEB_OUT_PATH = path.join(__dirname, "json");
+var allSetsAllLanguages = {};
+
 tiptoe(
 	function removeJSONDirectory()
 	{
-		rimraf(path.join(__dirname, "json"), this);
+		rimraf(path.join(WEB_OUT_PATH), this);
 	},
 	function createJSONDirectory()
 	{
-		fs.mkdir(path.join(__dirname, "json"), this);
+		fs.mkdir(path.join(WEB_OUT_PATH), this);
 	},
 	function findJSON()
 	{
@@ -51,12 +54,16 @@ tiptoe(
 	},
 	function makeSymlinks()
 	{
-		fs.symlink("AllSets.enUS.json", path.join(__dirname, "json", "AllSets.json"), this.parallel());
-		fs.symlink("AllSets.enUS.json.zip", path.join(__dirname, "json", "AllSets.json.zip"), this.parallel());
+		fs.symlink("AllSets.enUS.json", path.join(WEB_OUT_PATH, "AllSets.json"), this.parallel());
+		fs.symlink("AllSets.enUS.json.zip", path.join(WEB_OUT_PATH, "AllSets.json.zip"), this.parallel());
+
+		fs.writeFileSync(path.join(WEB_OUT_PATH, "AllSetsAllLanguages.json"), JSON.stringify(allSetsAllLanguages), {encoding:"utf8"});
+		dustData.allSetsAllLanguagesSize = printUtil.toSize(JSON.stringify(allSetsAllLanguages).length, 1);
+		runUtil.run("zip", ["-9", "AllSetsAllLanguages.json.zip", "AllSetsAllLanguages.json"], { cwd:  WEB_OUT_PATH, silent : true }, this.parallel());
 
 		this.data.setNames.forEach(function(setName)
 		{
-			fs.symlink(setName + ".enUS.json", path.join(__dirname, "json", setName + ".json"), this.parallel());
+			fs.symlink(setName + ".enUS.json", path.join(WEB_OUT_PATH, setName + ".json"), this.parallel());
 		}.bind(this));
 	},
 	function verifyJSON()
@@ -69,8 +76,8 @@ tiptoe(
 	{
 		base.info("Saving other JSON...");
 
-		fs.writeFile(path.join(__dirname, "json", "SetList.json"), JSON.stringify(this.data.setNames.sort()), {encoding : "utf8"}, this.parallel());
-		fs.writeFile(path.join(__dirname, "json", "version.json"), JSON.stringify({version:dustData.version}), {encoding : "utf8"}, this.parallel());
+		fs.writeFile(path.join(WEB_OUT_PATH, "SetList.json"), JSON.stringify(this.data.setNames.sort()), {encoding : "utf8"}, this.parallel());
+		fs.writeFile(path.join(WEB_OUT_PATH, "version.json"), JSON.stringify({version:dustData.version}), {encoding : "utf8"}, this.parallel());
 	},
 	function render()
 	{
@@ -79,6 +86,7 @@ tiptoe(
 		var newSets = [];
 		Object.forEach(dustData.sets, function(key, value) { value.name = key; newSets.push(value); });
 		dustData.sets = newSets;
+		dustData.allSetsAllLanguagesSizeZip = printUtil.toSize(fs.statSync(path.join(WEB_OUT_PATH, "AllSetsAllLanguages.json.zip")).size, 1);
 
 		var individualHTML = "";
 		var languages = C.LANGUAGES_FULL.multiSort([function(o) { return o.language; }, function(o) { return o.country; }]);
@@ -140,7 +148,6 @@ function processLanguage(setNames, language, cb)
 	base.info("Processing language: %s", language);
 
 	var OUT_PATH = path.join(__dirname, "..", "out");
-	var WEB_OUT_PATH = path.join(__dirname, "json");
 	var setsSizeLang = {};
 
 	tiptoe(
@@ -169,13 +176,15 @@ function processLanguage(setNames, language, cb)
 				fs.writeFile(path.join(WEB_OUT_PATH, setName + "." + language + ".json"), JSON.stringify(set), {encoding:"utf8"}, this.parallel());
 			}.bind(this));
 
+			allSetsAllLanguages[language] = allSets;
+
 			var allSize = printUtil.toSize(JSON.stringify(allSets).length, 1);
 			if(language==="enUS")
 				dustData.allSize = allSize;
 			else
 				dustData.allSizeLangs.push({language:language, allSize : allSize});
 
-			fs.writeFile(path.join(__dirname, "json", "AllSets." + language + ".json"), JSON.stringify(allSets), {encoding : "utf8"}, this.parallel());
+			fs.writeFile(path.join(WEB_OUT_PATH, "AllSets." + language + ".json"), JSON.stringify(allSets), {encoding : "utf8"}, this.parallel());
 		},
 		function zipAllSets()
 		{
