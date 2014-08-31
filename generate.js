@@ -59,7 +59,7 @@ tiptoe(
 	function getCards()
 	{
 		base.info("Finding card XML...");
-		glob(path.join(OUT_PATH_TO_CARDXML, CARDXML_DIR_NAME, "TextAsset", "*.txt"), this);
+		glob(path.join(OUT_PATH_TO_CARDXML, CARDXML_DIR_NAME, "**", "*.txt"), this);
 	},
 	function processCards(files)
 	{
