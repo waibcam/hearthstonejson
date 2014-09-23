@@ -2,12 +2,17 @@
 
 (function(exports)
 {
-	exports.LANGUAGES = ["enUS", "frFR", "zhTW", "zhCN", "ruRU", "ptBR", "plPL", "koKR", "itIT", "esMX", "esES", "deDE"];
+	exports.LANGUAGES = ["enUS", "frFR", "zhTW", "zhCN", "ruRU", "ptBR", "plPL", "koKR", "itIT", "esMX", "esES", "deDE", "ptPT", "enGB"];
 	exports.LANGUAGES_FULL =
 	[
 		{
 			code : "enUS",
 			country : "United States",
+			language : "English"
+		},
+		{
+			code : "enGB",
+			country : "Great Britain",
 			language : "English"
 		},
 		{
@@ -33,6 +38,11 @@
 		{
 			code : "ptBR",
 			country : "Brazil",
+			language : "Portuguese"
+		},
+		{
+			code : "ptPT",
+			country : "Portugal",
 			language : "Portuguese"
 		},
 		{

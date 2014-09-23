@@ -56,18 +56,13 @@ tiptoe(
 		base.info("Extracting card XML...");
 		runUtil.run(DISUNITY_PATH, ["-c", "extract", CARDXML_FILE_NAME], {cwd:OUT_PATH_TO_CARDXML, silent : true}, this);
 	},
-	function getCards()
+	function processLanguages()
 	{
-		base.info("Finding card XML...");
-		glob(path.join(OUT_PATH_TO_CARDXML, CARDXML_DIR_NAME, "**", "*.txt"), this);
-	},
-	function processCards(files)
-	{
-		base.info("Processing %d card XML files...", files.length);
+		base.info("Processing card languages...");
 		C.LANGUAGES.serialForEach(function(language, cb)
 		{
 			base.info("Processing language: %s", language);
-			files.serialForEach(function(file, subcb) { processCard(file, language, subcb); }, cb);
+			processCards(path.join(OUT_PATH, "cardxml0", "TextAsset", language + ".txt"), language, cb);
 		}, this);
 	},
 	function saveSets(cards)
@@ -151,9 +146,9 @@ var MECHANIC_TAGS = ["Windfury", "Combo", "Secret", "Battlecry", "Deathrattle", 
 					"HealTarget", "GrantCharge", "ImmuneToSpellpower", "AffectedBySpellPower", "Summoned"];
 var KNOWN_TAGS = USED_TAGS.concat(IGNORED_TAGS, MECHANIC_TAGS);
 
-function processCard(cardXMLPath, language, cb)
+function processCards(cardXMLPath, language, cb)
 {
-	var card = {};
+	var cards = [];
 
 	tiptoe(
 		function loadFile()
@@ -163,57 +158,13 @@ function processCard(cardXMLPath, language, cb)
 		function processFile(cardXMLData)
 		{
 			var xmlDoc = libxmljs.parseXml(cardXMLData);
-			var Entity = xmlDoc.get("/Entity");
-
-			Entity.childNodes().forEach(function(childNode)
+			var cardDefs = xmlDoc.get("/CardDefs");
+			cardDefs.childNodes().forEach(function(childNode)
 			{
-				if(childNode.name()!=="Tag")
+				if(childNode.name()!=="Entity")
 					return;
 
-				var tagName = childNode.attr("name").value();
-				if(KNOWN_TAGS.contains(tagName))
-					return;
-
-				base.info("New Tag name [%s] for card: %s", tagName, cardXMLPath);
-			});
-
-			card.id = Entity.attr("CardID").value();
-			card.name = getTagValue(Entity, "CardName", language);
-			card.set = getTagValue(Entity, "CardSet", language);
-			card.type = getTagValue(Entity, "CardType", language);
-			card.faction = getTagValue(Entity, "Faction", language);
-			card.rarity = getTagValue(Entity, "Rarity", language);
-			card.cost = getTagValue(Entity, "Cost", language);
-			card.attack = getTagValue(Entity, "Atk", language);
-			card.health = getTagValue(Entity, "Health", language);
-			card.durability = getTagValue(Entity, "Durability", language);
-			card.text = getTagValue(Entity, "CardTextInHand", language);
-			card.inPlayText = getTagValue(Entity, "CardTextInPlay", language);
-			card.flavor = getTagValue(Entity, "FlavorText", language);
-			card.artist = getTagValue(Entity, "ArtistName", language);
-			card.collectible = getTagValue(Entity, "Collectible", language);
-			card.elite = getTagValue(Entity, "Elite", language);
-			card.race = getTagValue(Entity, "Race", language);
-			card.playerClass = getTagValue(Entity, "Class", language);
-			card.howToGet = getTagValue(Entity, "HowToGetThisCard", language);
-			card.howToGetGold = getTagValue(Entity, "HowToGetThisGoldCard", language);
-			card.mechanics = [];
-
-			MECHANIC_TAGS.forEach(function(MECHANIC_TAG)
-			{
-				if(getTagValue(Entity, MECHANIC_TAG, language))
-					card.mechanics.push(MECHANIC_TAG);
-			});
-
-			if(!card.mechanics.length)
-				delete card.mechanics;
-			else
-				card.mechanics = card.mechanics.sort();
-
-			Object.keys(card).forEach(function(key)
-			{
-				if(card[key]===undefined)
-					delete card[key];
+				cards.push(processEntity(childNode, language));
 			});
 
 			this();
@@ -221,14 +172,74 @@ function processCard(cardXMLPath, language, cb)
 		function finish(err)
 		{
 			if(err)
-				base.error("Error for card: " + card.name);
+			{
+				base.error("Error for file: " + cardXMLPath);
+				base.error(err);
+			}
 
-			setImmediate(function() { cb(err, card); });
+			setImmediate(function() { cb(err, cards); });
 		}
 	);
 }
 
-function getTagValue(Entity, tagName, language)
+function processEntity(Entity, language)
+{
+	var card = {};
+	Entity.childNodes().forEach(function(childNode)
+	{
+		if(childNode.name()!=="Tag")
+			return;
+
+		var tagName = childNode.attr("name").value();
+		if(KNOWN_TAGS.contains(tagName))
+			return;
+
+		base.info("New Tag name [%s]", tagName);
+	});
+
+	card.id = Entity.attr("CardID").value();
+	card.name = getTagValue(Entity, "CardName");
+	card.set = getTagValue(Entity, "CardSet");
+	card.type = getTagValue(Entity, "CardType");
+	card.faction = getTagValue(Entity, "Faction");
+	card.rarity = getTagValue(Entity, "Rarity");
+	card.cost = getTagValue(Entity, "Cost");
+	card.attack = getTagValue(Entity, "Atk");
+	card.health = getTagValue(Entity, "Health");
+	card.durability = getTagValue(Entity, "Durability");
+	card.text = getTagValue(Entity, "CardTextInHand");
+	card.inPlayText = getTagValue(Entity, "CardTextInPlay");
+	card.flavor = getTagValue(Entity, "FlavorText");
+	card.artist = getTagValue(Entity, "ArtistName");
+	card.collectible = getTagValue(Entity, "Collectible");
+	card.elite = getTagValue(Entity, "Elite");
+	card.race = getTagValue(Entity, "Race");
+	card.playerClass = getTagValue(Entity, "Class");
+	card.howToGet = getTagValue(Entity, "HowToGetThisCard");
+	card.howToGetGold = getTagValue(Entity, "HowToGetThisGoldCard");
+	card.mechanics = [];
+
+	MECHANIC_TAGS.forEach(function(MECHANIC_TAG)
+	{
+		if(getTagValue(Entity, MECHANIC_TAG))
+			card.mechanics.push(MECHANIC_TAG);
+	});
+
+	if(!card.mechanics.length)
+		delete card.mechanics;
+	else
+		card.mechanics = card.mechanics.sort();
+
+	Object.keys(card).forEach(function(key)
+	{
+		if(card[key]===undefined)
+			delete card[key];
+	});
+
+	return card;
+}
+
+function getTagValue(Entity, tagName)
 {
 	var Tag = Entity.get("Tag[@name='" + tagName + "']");
 	if(!Tag)
@@ -236,12 +247,7 @@ function getTagValue(Entity, tagName, language)
 
 	var type = Tag.attr("type").value();
 	if(type==="String")
-	{
-		var stringTag = Tag.get(language);
-		if(!stringTag)
-			stringTag = Tag.get("enUS");
-		return stringTag.text().trim();
-	}
+		return Tag.text().trim();
 
 	var value = Tag.attr("value").value();
 
