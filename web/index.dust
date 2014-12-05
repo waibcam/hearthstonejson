@@ -92,7 +92,7 @@
     {
              name : "Leeroy Jenkins",
 
-             cost : 4,
+             cost : 5,
 
              type : "Minion",
            rarity : "Legendary",

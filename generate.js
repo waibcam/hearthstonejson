@@ -145,6 +145,69 @@ var IGNORED_TAGS = ["AttackVisualType", "EnchantmentBirthVisual", "EnchantmentId
 var MECHANIC_TAGS = ["Windfury", "Combo", "Secret", "Battlecry", "Deathrattle", "Taunt", "Stealth", "Spellpower", "Enrage", "Freeze", "Charge", "Overload", "Divine Shield", "Silence", "Morph", "OneTurnEffect", "Poisonous", "Aura", "AdjacentBuff",
 					"HealTarget", "GrantCharge", "ImmuneToSpellpower", "AffectedBySpellPower", "Summoned"];
 var KNOWN_TAGS = USED_TAGS.concat(IGNORED_TAGS, MECHANIC_TAGS);
+var ENUMID_TO_NAME =
+{
+	185 : "CardName",
+	183 : "CardSet",
+	202 : "CardType",
+	201 : "Faction",
+	199 : "Class",
+	203 : "Rarity",
+	48 : "Cost",
+	251 : "AttackVisualType",
+	184 : "CardTextInHand",
+	47 : "Atk",
+	45 : "Health",
+	321 : "Collectible",
+	342 : "ArtistName",
+	351 : "FlavorText",
+	32 : "TriggerVisual",
+	330 : "EnchantmentBirthVisual",
+	331 : "EnchantmentIdleVisual",
+	268 : "DevState",
+	365 : "HowToGetThisGoldCard",
+	190 : "Taunt",
+	364 : "HowToGetThisCard",
+	338 : "OneTurnEffect",
+	293 : "Morph",
+	208 : "Freeze",
+	252 : "CardTextInPlay",
+	325 : "TargetingArrowText",
+	189 : "Windfury",
+	218 : "Battlecry",
+	200 : "Race",
+	192 : "Spellpower",
+	187 : "Durability",
+	197 : "Charge",
+	362 : "Aura",
+	361 : "HealTarget",
+	349 : "ImmuneToSpellpower",
+	194 : "Divine Shield",
+	350 : "AdjacentBuff",
+	217 : "Deathrattle",
+	191 : "Stealth",
+	220 : "Combo",
+	339 : "Silence",
+	212 : "Enrage",
+	370 : "AffectedBySpellPower",
+	240 : "Cant Be Damaged",
+	114 : "Elite",
+	219 : "Secret",
+	363 : "Poisonous",
+	215 : "Recall",
+	340 : "Counter",
+	205 : "Summoned",
+	367 : "AIMustPlay",
+	335 : "InvisibleDeathrattle",
+	377 : "UKNOWN_HasOnDrawEffect",
+	388 : "SparePart",
+	389 : "UNKNOWN_DuneMaulShaman"
+};
+var BOOLEAN_TYPES = ["Collectible", "Elite"];
+// Fields above that I don't know the actual name for has an UNKNOWN_ prefix
+
+var NAME_TO_ENUMID = Object.swapKeyValues(ENUMID_TO_NAME);
+var IGNORED_TAG_NAMES = ["text", "MasterPower", "Power", "TriggeredPowerHistoryInfo", "EntourageCard"];
 
 function processCards(cardXMLPath, language, cb)
 {
@@ -187,14 +250,24 @@ function processEntity(Entity, language)
 	var card = {};
 	Entity.childNodes().forEach(function(childNode)
 	{
-		if(childNode.name()!=="Tag")
+		var childNodeName = childNode.name();
+		if(IGNORED_TAG_NAMES.contains(childNodeName))
 			return;
 
-		var tagName = childNode.attr("name").value();
-		if(KNOWN_TAGS.contains(tagName))
+		if(childNodeName!=="Tag" && childNodeName!=="ReferencedTag")
+		{
+			base.info("New XML node name [%s] with XML: %s", childNodeName, childNode.toString());
+			process.exit(1);
 			return;
+		}
 
-		base.info("New Tag name [%s]", tagName);
+		var enumID = +childNode.attr("enumID").value();
+		if(!ENUMID_TO_NAME.hasOwnProperty(enumID))
+		{
+			base.info("New enumID [%d] with value [%s] in parent:\n%s", enumID, childNode.toString(), childNode.parent().toString());
+			process.exit(1);
+			return;
+		}
 	});
 
 	card.id = Entity.attr("CardID").value();
@@ -241,7 +314,7 @@ function processEntity(Entity, language)
 
 function getTagValue(Entity, tagName)
 {
-	var Tag = Entity.get("Tag[@name='" + tagName + "']");
+	var Tag = Entity.get("Tag[@enumID='" + NAME_TO_ENUMID[tagName] + "']");
 	if(!Tag)
 		return undefined;
 
@@ -253,18 +326,26 @@ function getTagValue(Entity, tagName)
 
 	if(!TAG_VALUE_MAPS.hasOwnProperty(tagName))
 	{
+		if(type==="")
+		{
+			if(BOOLEAN_TYPES.contains(tagName))
+				type = "Bool";
+			else
+				type = "Number";
+		}
+
 		if(type==="Number")
 			return +value;
 
 		if(type==="Bool")
 			return value==="1" ? true : false;
 
-		throw new Error("Unhandled Tag type [" + type + "]");
+		throw new Error("Unhandled Tag type [" + type + "] for tag: " + Tag.toString());
 	}
 
 	var tagMap = TAG_VALUE_MAPS[tagName];
 	if(!tagMap.hasOwnProperty(value))
-		throw new Error("Unknown " + tagName + ": " + value);
+		throw new Error("Unknown " + tagName + ": " + value + "\nWith XML: " + Tag.parent().toString());
 
 	return tagMap[value];
 }
@@ -281,6 +362,7 @@ var TAG_VALUE_MAPS =
 		8 : "Debug",
 		11 : "Promotion",
 		12 : "Curse of Naxxramas",
+		13 : "Goblins vs Gnomes",
 		16 : "Credits"
 	},
 	"CardType" :
@@ -314,7 +396,8 @@ var TAG_VALUE_MAPS =
 		20 : "Beast",
 		21 : "Totem",
 		23 : "Pirate",
-		24 : "Dragon"
+		24 : "Dragon",
+		17 : "Mech"
 	},
 	"Class" :
 	{
