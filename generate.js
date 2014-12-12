@@ -355,7 +355,7 @@ var TAG_VALUE_MAPS =
 	"CardSet" :
 	{
 		2 : "Basic",
-		3 : "Expert",
+		3 : "Classic",
 		4 : "Reward",
 		5 : "Missions",
 		7 : "System",
