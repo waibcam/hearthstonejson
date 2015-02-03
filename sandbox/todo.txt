@@ -6,6 +6,7 @@
 /-----------------\
 | Medium Priority |
 \-----------------/
+* Look into adding a list of card backs. See if this information is available in the game files or not
 
 
 /--------------\
