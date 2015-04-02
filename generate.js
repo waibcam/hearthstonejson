@@ -9,7 +9,6 @@ var base = require("xbase"),
 	runUtil = require("xutil").run,
 	fileUtil = require("xutil").file,
 	rimraf = require("rimraf"),
-	glob = require("glob"),
 	tiptoe = require("tiptoe");
 
 if(process.argv.length<3 || !fs.existsSync(process.argv[2]))
@@ -19,7 +18,6 @@ if(process.argv.length<3 || !fs.existsSync(process.argv[2]))
 }
 
 var MPQ_PATH = process.argv[2];
-var MPQ_FILE_NAME = "base-Win.MPQ";
 var OUT_PATH = path.join(__dirname, "out");
 var OUT_PATH_TO_EXTRACTED_DATA = path.join(OUT_PATH, "Data");
 var OUT_PATH_TO_CARDXML = path.join(OUT_PATH_TO_EXTRACTED_DATA, "Win");
@@ -201,7 +199,10 @@ var ENUMID_TO_NAME =
 	335 : "InvisibleDeathrattle",
 	377 : "UKNOWN_HasOnDrawEffect",
 	388 : "SparePart",
-	389 : "UNKNOWN_DuneMaulShaman"
+	389 : "UNKNOWN_DuneMaulShaman",
+	380 : "UNKNOWN_Blackrock_Heroes",
+	402 : "UNKNOWN_Intense_Gaze",
+	401 : "UNKNOWN_BroodAffliction"
 };
 var BOOLEAN_TYPES = ["Collectible", "Elite"];
 // Fields above that I don't know the actual name for has an UNKNOWN_ prefix
@@ -363,6 +364,7 @@ var TAG_VALUE_MAPS =
 		11 : "Promotion",
 		12 : "Curse of Naxxramas",
 		13 : "Goblins vs Gnomes",
+		14 : "Blackrock Mountain",
 		16 : "Credits"
 	},
 	"CardType" :

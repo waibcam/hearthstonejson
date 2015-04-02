@@ -1,7 +1,6 @@
 "use strict";
 
 var base = require("xbase"),
-	util = require("util"),
 	C = require("C"),
 	runUtil = require("xutil").run,
 	rimraf = require("rimraf"),
@@ -10,16 +9,15 @@ var base = require("xbase"),
 	glob = require("glob"),
 	path = require("path"),
 	dustUtil = require("xutil").dust,
-	moment = require("moment"),
 	tiptoe = require("tiptoe");
 
 var dustData = 
 {
 	title           : "Hearthstone card data in JSON format",
 	sets            : {},	// Later changed to []
-	version         : "3.0.2",
-	patchVersion    : "2.1.0.7628",
-	lastUpdated     : "Feb 2, 2015",
+	version         : "4.0.0",
+	patchVersion    : "2.4.0.8311",
+	lastUpdated     : "Apr 2, 2015",
 	allSizeLangs    : [],
 	allSizeZipLangs : [],
 	changeLog       : fs.readFileSync(path.join(__dirname, "changelog.html"), {encoding : "utf8"})
@@ -90,7 +88,7 @@ tiptoe(
 
 		var individualHTML = "";
 		var languages = C.LANGUAGES_FULL.multiSort([function(o) { return o.language; }, function(o) { return o.country; }]);
-		var NUM_PER_CELL = 5;
+		var NUM_PER_CELL = 6;
 		var NUM_COLS = Math.ceil(dustData.sets.length/NUM_PER_CELL);
 
 		languages.forEach(function(languageFull, langi)
@@ -148,7 +146,6 @@ function processLanguage(setNames, language, cb)
 	base.info("Processing language: %s", language);
 
 	var OUT_PATH = path.join(__dirname, "..", "out");
-	var setsSizeLang = {};
 
 	tiptoe(
 		function loadJSON()
