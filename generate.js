@@ -315,6 +315,15 @@ function processEntity(Entity, language)
 
 function getTagValue(Entity, tagName)
 {
+	var value = getTagValue_Actual(Entity, tagName);
+	if(value && typeof value==="string")
+		value = value.replaceAll(" ", " ");
+
+	return value;
+}
+
+function getTagValue_Actual(Entity, tagName)
+{
 	var Tag = Entity.get("Tag[@enumID='" + NAME_TO_ENUMID[tagName] + "']");
 	if(!Tag)
 		return undefined;

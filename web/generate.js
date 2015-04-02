@@ -15,7 +15,7 @@ var dustData =
 {
 	title           : "Hearthstone card data in JSON format",
 	sets            : {},	// Later changed to []
-	version         : "4.0.0",
+	version         : "4.0.1",
 	patchVersion    : "2.4.0.8311",
 	lastUpdated     : "Apr 2, 2015",
 	allSizeLangs    : [],
