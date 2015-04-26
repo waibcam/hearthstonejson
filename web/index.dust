@@ -248,6 +248,7 @@
 		<ul>
 			<li><a href="/json/SetList.json">/json/SetList.json</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;An array of set names currently available</li>
 			<li><a href="/json/version.json">/json/version.json</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Current version number for the JSON files</li>
+			<li><a href="/json/patchVersion.json">/json/patchVersion.json</a>&nbsp;&nbsp;&nbsp;&nbsp;Current Hearthstone patch version</li>
 		</ul>
 		<br>
 		<br>
