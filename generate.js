@@ -24,7 +24,7 @@ var OUT_PATH_TO_CARDXML = path.join(OUT_PATH_TO_EXTRACTED_DATA, "Win");
 var CARDXML_FILE_NAME = "cardxml0.unity3d";
 var CARDXML_DIR_NAME = path.basename(CARDXML_FILE_NAME, path.extname(CARDXML_FILE_NAME));
 var MPQEXTRACTOR_PATH = path.join(__dirname, "MPQExtractor", "build", "bin", "MPQExtractor");
-var DISUNITY_PATH = path.join(__dirname, "disunity", "disunity.sh");
+var DISUNITY_PATH = path.join(__dirname, "disunity", "disunity.jar");
 
 tiptoe(
 	function clearOut()
@@ -52,7 +52,7 @@ tiptoe(
 	function extractCardXMLIfNeeded()
 	{
 		base.info("Extracting card XML...");
-		runUtil.run(DISUNITY_PATH, ["-c", "extract", CARDXML_FILE_NAME], {cwd:OUT_PATH_TO_CARDXML, silent : true}, this);
+		runUtil.run("java", ["-jar", DISUNITY_PATH, "extract", CARDXML_FILE_NAME], {cwd:OUT_PATH_TO_CARDXML, silent : true}, this);
 	},
 	function processLanguages()
 	{
@@ -60,7 +60,7 @@ tiptoe(
 		C.LANGUAGES.serialForEach(function(language, cb)
 		{
 			base.info("Processing language: %s", language);
-			processCards(path.join(OUT_PATH, "cardxml0", "TextAsset", language + ".txt"), language, cb);
+			processCards(path.join(OUT_PATH, "cardxml0", "CAB-cardxml0", "TextAsset", language + ".txt"), language, cb);
 		}, this);
 	},
 	function saveSets(cards)
@@ -131,10 +131,7 @@ function saveSet(cards, language, cb)
 function fixCard(language, card)
 {
 	if(["Minion", "Weapon"].contains(card.type) && !card.hasOwnProperty("cost"))
-	{
-		console.log("Fixing missing cost %s \"%s\"", card.type, card.name);
 		card.cost = 0;
-	}
 }
 
 var USED_TAGS = ["CardID", "CardName", "CardSet", "CardType", "Faction", "Rarity", "Cost", "Atk", "Health", "Durability", "CardTextInHand", "CardTextInPlay", "FlavorText", "ArtistName", "Collectible",

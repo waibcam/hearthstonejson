@@ -2,10 +2,9 @@
 
 echo "Downloading disunity..."
 rm -rf disunity
-wget https://github.com/ata4/disunity/releases/download/v0.3.2/disunity_v0.3.2.zip
-unzip -d disunity disunity_v0.3.2.zip
-rm disunity_v0.3.2.zip
-chmod 755 disunity/disunity.sh
+wget https://github.com/ata4/disunity/releases/download/v0.3.4/disunity_v0.3.4.zip
+unzip -d disunity disunity_v0.3.4.zip
+rm disunity_v0.3.4.zip
 
 echo "Building MPQExtractor..."
 git submodule init
