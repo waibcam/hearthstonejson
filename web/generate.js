@@ -7,6 +7,7 @@ var base = require("xbase"),
 	printUtil = require("xutil").print,
 	fs = require("fs"),
 	moment = require("moment"),
+	fileUtil = require("xutil").file,
 	glob = require("glob"),
 	path = require("path"),
 	dustUtil = require("xutil").dust,
@@ -32,6 +33,17 @@ tiptoe(
 	{
 		fs.mkdir(path.join(WEB_OUT_PATH), this);
 	},
+	function findCardBacks()
+	{
+		glob(path.join(__dirname, "..", "outCardBacks", "*.json"), this);
+	},
+	function copyCardBacks(jsonFiles)
+	{
+		jsonFiles.serialForEach(function(jsonFile, subcb)
+		{
+			fileUtil.copy(jsonFile, path.join(WEB_OUT_PATH, path.basename(jsonFile)), subcb);
+		}, this);
+	},
 	function findJSON()
 	{
 		glob(path.join(__dirname, "..", "out", "*.enUS.json"), this);
@@ -49,6 +61,7 @@ tiptoe(
 	},
 	function makeSymlinks()
 	{
+		fs.symlink("CardBacks.enUS.json", path.join(WEB_OUT_PATH, "CardBacks.json"), this.parallel());
 		fs.symlink("AllSets.enUS.json", path.join(WEB_OUT_PATH, "AllSets.json"), this.parallel());
 		fs.symlink("AllSets.enUS.json.zip", path.join(WEB_OUT_PATH, "AllSets.json.zip"), this.parallel());
 
@@ -83,6 +96,7 @@ tiptoe(
 		Object.forEach(dustData.sets, function(key, value) { value.name = key; newSets.push(value); });
 		dustData.sets = newSets;
 		dustData.allSetsAllLanguagesSizeZip = printUtil.toSize(fs.statSync(path.join(WEB_OUT_PATH, "AllSetsAllLanguages.json.zip")).size, 1);
+		dustData.cardBacksSize = printUtil.toSize(fs.statSync(path.join(WEB_OUT_PATH, "CardBacks.json")).size, 1);
 
 		var individualHTML = "";
 		var languages = C.LANGUAGES_FULL.multiSort([function(o) { return o.language; }, function(o) { return o.country; }]);
@@ -95,7 +109,10 @@ tiptoe(
 			individualHTML += "\n<tr class='" + alternateClass + "'>\n\t<td rowspan='" + NUM_PER_CELL+ "'>" + languageFull.language + " (" + languageFull.country + ")</td>\n";
 			individualHTML += "\t<td rowspan='" + NUM_PER_CELL + "'>\n";
 			individualHTML += "<a href='json/AllSets." + languageFull.code + ".json'>AllSets." + languageFull.code + ".json</a><br><br>";
-			individualHTML += "<a href='json/AllSets." + languageFull.code + ".json.zip'>AllSets." + languageFull.code + ".json.zip</a>";
+			individualHTML += "<a href='json/AllSets." + languageFull.code + ".json.zip'>AllSets." + languageFull.code + ".json.zip</a><br><br>";
+
+			individualHTML += "<br><br><a href='json/CardBacks." + languageFull.code + ".json'>CardBacks." + languageFull.code + ".json</a>";
+
 			individualHTML += "</td>\n";
 
 			for(var i=0;i<NUM_PER_CELL*NUM_COLS;i++)

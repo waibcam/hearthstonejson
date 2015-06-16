@@ -60,6 +60,14 @@
 					</td>
 				</tr>
 				<tr>
+					<td class="sizeColLeft">
+						<a href="json/CardBacks.json">CardBacks.json</a>
+					</td>
+					<td class="sizeColRight">
+						<span class="size">{cardBacksSize}</span>
+					</td>
+				</tr>
+				<tr>
 					<th colspan="2"><br><span style="font-size: 70%;">(All Languages)</span></th>
 				</tr>
 				<tr>
@@ -90,32 +98,32 @@
 		<img src="images/leeroy.png" id="cardExample">
 		<pre id="cardExampleCode"><code data-language="javascript">
     {
-             name : "Leeroy Jenkins",
+             "name" : "Leeroy Jenkins",
 
-             cost : 5,
+             "cost" : 5,
 
-             type : "Minion",
-           rarity : "Legendary",
-          faction : "Alliance",
+             "type" : "Minion",
+           "rarity" : "Legendary",
+          "faction" : "Alliance",
 
-             text : "<b>Charge</b>. <b>Battlecry:</b> Summon two 1/1 Whelps for your opponent.",
-        mechanics : ["Battlecry", "Charge"],
+             "text" : "<b>Charge</b>. <b>Battlecry:</b> Summon two 1/1 Whelps for your opponent.",
+        "mechanics" : ["Battlecry", "Charge"],
 
-           flavor : "At least he has Angry Chicken.",
+           "flavor" : "At least he has Angry Chicken.",
 
-           artist : "Gabe from Penny Arcade",
+           "artist" : "Gabe from Penny Arcade",
 
-           attack : 6,
-           health : 2,
+           "attack" : 6,
+           "health" : 2,
 
-      collectible : true,
-               id : "EX1_116",
-            elite : true
+      "collectible" : true,
+               "id" : "EX1_116",
+            "elite" : true
     }
 		</code></pre>
 		<hr>
 		<a name="documentation"></a>
-		<h1>Documentation<a href="#top">(back to top)</a></h1>
+		<h1>Card Documentation<a href="#top">(back to top)</a></h1>
 		<p>All JSON files are UTF8 encoded and may contain UTF8 characters.<br>
 		<br>The 'AllSets.json' file is an object where each key is the set name and the value is an array of the cards in that set.<br>
 		<br>Each individual set file is a JSON array of the cards cards in that set.<br>
@@ -238,6 +246,82 @@
 					<td>howToGetGold</td>
 					<td>"Unlocked at Level 40."</td>
 					<td>How to get the gold version of this card. Only present if it's gotten via a method other than opening a booster pack.</td>
+				</tr>
+			</tbody>
+		</table>
+		<hr>
+		<h1>Example Card Back<a href="#top">(back to top)</a></h1>
+		<img src="images/fireside.png" id="cardBackExample">
+		<pre id="cardBackExampleCode"><code data-language="javascript">
+
+
+    {
+             "name" : "Fireside",
+
+      "description" : "A generous gift from the Innkeeper.  He loves to see his guests having a good time together.",
+
+           "source" : "Special",
+       "sourceType" : "Achieve",
+
+         "howToGet" : "Play three matches against players on the same local network as you. (Must have at least 3 players on that network!)",
+
+          "enabled" : true,
+               "id" : 4
+    }
+		</code></pre>
+		<hr>
+		<a name="cardBackDocumentation"></a>
+		<h1>Card Back Documentation<a href="#top">(back to top)</a></h1>
+		<p>The 'CardBacks.json' file is an array where each item is an object representing a card back.<br>
+		<br>
+		If a value would be empty, then the key will not exist in the object.<br>
+		<br>
+		All card data is extracted directly from the Hearthstone game files.<br>
+		<br>
+		</p>
+		<table id="cardBackDocumentationTable">
+			<thead>
+				<tr>
+					<th>Key</th>
+					<th>Example</th>
+					<th>Description</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>name</td>
+					<td>"Fireside"</td>
+					<td>The card back name.</td>
+				</tr>
+				<tr>
+					<td>description</td>
+					<td>A generous gift from the Innkeeper.  He loves to see his guests having a good time together.</td>
+					<td>A description of the card back.</td>
+				</tr>
+				<tr>
+					<td>source</td>
+					<td>"Special"</td>
+					<td>The source of this card back.</td>
+				</tr>
+				<tr>
+					<td>sourceType</td>
+					<td>"Achieve"</td>
+					<td>The type of the soure for this card back.</td>
+				</tr>
+				<tr>
+					<td>howToGet</td>
+					<td>"Play three matches against players on the same local network as you. (Must have at least 3 players on that network!)"</td>
+					<td>How to get this card back. Not always present.</td>
+				</tr>
+				<tr>
+					<td>id</td>
+					<td>4</td>
+					<td>The Hearthstone ID of the card back.</td>
+				</tr>
+				<tr>
+					<td>enabled</td>
+					<td>true</td>
+					<td>If this card back is enabled in the game, this is true. false otherwise.</td>
 				</tr>
 			</tbody>
 		</table>
