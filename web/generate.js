@@ -80,14 +80,6 @@ tiptoe(
 
 		checkCardDataTypes(this.data.setNames, this.parallel());
 	},
-	function saveOtherJSON()
-	{
-		base.info("Saving other JSON...");
-
-		fs.writeFile(path.join(WEB_OUT_PATH, "SetList.json"), JSON.stringify(this.data.setNames.sort()), {encoding : "utf8"}, this.parallel());
-		fs.writeFile(path.join(WEB_OUT_PATH, "version.json"), JSON.stringify({version:dustData.version}), {encoding : "utf8"}, this.parallel());
-		fs.writeFile(path.join(WEB_OUT_PATH, "patchVersion.json"), JSON.stringify({version:dustData.patchVersion}), {encoding : "utf8"}, this.parallel());
-	},
 	function render()
 	{
 		base.info("Rendering index...");
@@ -151,6 +143,14 @@ tiptoe(
 	{
 		fs.writeFile(path.join(__dirname, "index.html"), html, {encoding:"utf8"}, this);
 	},
+	function saveOtherJSON()
+	{
+		base.info("Saving other JSON...");
+
+		fs.writeFile(path.join(WEB_OUT_PATH, "SetList.json"), JSON.stringify(this.data.setNames.sort()), {encoding : "utf8"}, this.parallel());
+		fs.writeFile(path.join(WEB_OUT_PATH, "version.json"), JSON.stringify({version:dustData.version}), {encoding : "utf8"}, this.parallel());
+		fs.writeFile(path.join(WEB_OUT_PATH, "patchVersion.json"), JSON.stringify({version:dustData.patchVersion}), {encoding : "utf8"}, this.parallel());
+	},	
 	function finish(err)
 	{
 		if(err)
