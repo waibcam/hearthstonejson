@@ -6,6 +6,7 @@ var base = require("xbase"),
 	rimraf = require("rimraf"),
 	printUtil = require("xutil").print,
 	fs = require("fs"),
+	moment = require("moment"),
 	glob = require("glob"),
 	path = require("path"),
 	dustUtil = require("xutil").dust,
@@ -15,12 +16,8 @@ var dustData =
 {
 	title           : "Hearthstone card data in JSON format",
 	sets            : {},	// Later changed to []
-	version         : "4.0.2",
-	patchVersion    : "2.6.0.8834",
-	lastUpdated     : "Mar 31, 2015",
 	allSizeLangs    : [],
-	allSizeZipLangs : [],
-	changeLog       : fs.readFileSync(path.join(__dirname, "changelog.html"), {encoding : "utf8"})
+	allSizeZipLangs : []
 };
 
 var WEB_OUT_PATH = path.join(__dirname, "json");
@@ -89,7 +86,7 @@ tiptoe(
 
 		var individualHTML = "";
 		var languages = C.LANGUAGES_FULL.multiSort([function(o) { return o.language; }, function(o) { return o.country; }]);
-		var NUM_PER_CELL = 6;
+		var NUM_PER_CELL = 5;
 		var NUM_COLS = Math.ceil(dustData.sets.length/NUM_PER_CELL);
 
 		languages.forEach(function(languageFull, langi)
@@ -101,27 +98,35 @@ tiptoe(
 			individualHTML += "<a href='json/AllSets." + languageFull.code + ".json.zip'>AllSets." + languageFull.code + ".json.zip</a>";
 			individualHTML += "</td>\n";
 
-			for(var i=0;i<dustData.sets.length;i++)
+			for(var i=0;i<NUM_PER_CELL*NUM_COLS;i++)
 			{
-				var set = dustData.sets[(Math.floor(i/NUM_COLS) + ((i%NUM_COLS)*NUM_PER_CELL))];
-				individualHTML += "\t<td class='setLinkContainer'><a href='json/" + set.name + "." + languageFull.code + ".json'>" + set.name + "." + languageFull.code + ".json</a></td>\n";
+				if(i<dustData.sets.length)
+				{
+					var set = dustData.sets[i];
+					individualHTML += "\t<td class='setLinkContainer'><a href='json/" + set.name + "." + languageFull.code + ".json'>" + set.name + "." + languageFull.code + ".json</a></td>\n";
+				}
+				else
+				{
+					individualHTML += "<td class='setLinkContainer'>&nbsp;</td>";
+				}
+
 				if(((i+1)%NUM_COLS===0))
 				{
 					individualHTML += "</tr>\n";
-					if(i!==(dustData.sets.length-1))
-						individualHTML += "<tr class='" + (((i+1+NUM_COLS)>=dustData.sets.length) ? "setContainerLast" : "") + alternateClass + "'>\n";
+					if((i+1)<(NUM_PER_CELL*NUM_COLS))
+						individualHTML += "<tr class='" + (i>=(NUM_PER_CELL*(NUM_COLS-1)) ? "setContainerLast" : "") + alternateClass + "'>\n";
 				}
-			}
-
-			for(i=1;i<(dustData.sets.length/NUM_PER_CELL);i++)
-			{
-				individualHTML += "<td class='setLinkContainer'>&nbsp;</td>";
 			}
 		});
 		dustData.individualHeaderColSpan = NUM_COLS+2;
 		dustData.individualNumCols = NUM_COLS;
 
 		dustData.individualHTML = individualHTML;
+
+		dustData.changeLog = JSON.parse(fs.readFileSync(path.join(__dirname, "changelog.json"), {encoding : "utf8"})).map(function(o) { o.when = moment(o.when, "YYYY-MM-DD").format("MMM D, YYYY"); return o; });
+		dustData.lastUpdated = dustData.changeLog[0].when;
+		dustData.version = dustData.changeLog[0].version;
+		dustData.patchVersion = dustData.changeLog[0].patchVersion;
 
 		dustUtil.render(__dirname, "index", dustData, { keepWhitespace : true }, this);
 	},

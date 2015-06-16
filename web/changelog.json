@@ -1,0 +1,108 @@
+[
+	{
+		"version" : "5.0.0",
+		"when" : "2015-06-15",
+		"patchVersion" : "2.7.0.9166",
+		"changes" : [
+			"Added Tavern Brawl and Hero Skins!"
+		]
+	},
+	{
+		"version" : "4.0.2",
+		"when" : "2015-05-31",
+		"patchVersion" : "2.6.0.8834",
+		"changes" : [
+			"Very minor changes. Two artist corrections and some debug card changes."
+		]
+	},
+	{
+		"version" : "4.0.1",
+		"when" : "2015-04-02",
+		"patchVersion" : "2.4.0.8311",
+		"changes" : [
+			"Fixed a bug with non-breaking spaces appearing instead of regular spaces in several french cards"
+		]
+	},
+	{
+		"version" : "4.0.0",
+		"when" : "2015-04-02",
+		"patchVersion" : "2.4.0.8311",
+		"changes" : [
+			"Added Blackrock Mountain!"
+		]
+	},
+	{
+		"version" : "3.0.2",
+		"when" : "2015-02-02",
+		"patchVersion" : "2.1.0.7628",
+		"changes" : [
+			"Updated to latest patch data."
+			]
+	},
+	{
+		"version" : "3.0.1",
+		"when" : "2014-12-11",
+		"patchVersion" : "2.0.0.7234",
+		"changes" : [
+			"Changed 'Expert' set to 'Classic' as Blizzard has done the same."
+		]
+	},
+	{
+		"version" : "3.0.0",
+		"when" : "2014-12-05",
+		"patchVersion" : "2.0.0.7234",
+		"changes" : [
+			"Added Goblins vs Gnomes!"
+		]
+	},
+	{
+		"version" : "2.1.0",
+		"when" : "2014-09-23",
+		"patchVersion" : "1.2.0.6485",
+		"changes" : [
+			"Updated to latest patch data.",
+			"Added two new languages: ptPT and enGB."
+		]
+	},
+	{
+		"version" : "2.0.0",
+		"when" : "2014-07-22",
+		"patchVersion" : "1.1.0.6024",
+		"changes" : [
+			"Added Curse of Naxxramas!"
+		]
+	},
+	{
+		"version" : "1.2.1",
+		"when" : "2014-05-12",
+		"patchVersion" : "1.0.0.5314",
+		"changes" : [
+			"Updated to latest patch data.",
+			"A few minions now correctly have a 0 cost where before their cost was missing."
+		]
+	},
+	{
+		"version" : "1.2.0",
+		"when" : "2014-05-02",
+		"patchVersion" : "1.0.0.5170",
+		"changes" : [
+			"Added 'mechanics' attribute to cards."
+		]
+	},
+	{
+		"version" : "1.1.0",
+		"when" : "2014-05-02",
+		"patchVersion" : "1.0.0.5170",
+		"changes" : [
+			"Added non-English languages."
+		]
+	},
+	{
+		"version" : "1.0.0",
+		"when" : "2014-05-01",
+		"patchVersion" : "1.0.0.5170",
+		"changes" : [
+			"First release!"
+		]
+	}
+]

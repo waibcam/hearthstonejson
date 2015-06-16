@@ -260,10 +260,26 @@
 				<tr>
 					<th>Version</th>
 					<th>Date</th>
+					<th>Patch Version</th>
 					<th>Changes</th>
 				</tr>
 			</thead>
-			<tbody>{changeLog|s}</tbody>
+			<tbody>
+				{#changeLog}
+					<tr>
+						<td>{version}</td>
+						<td>{when}</td>
+						<td>{patchVersion}</td>
+						<td>
+							<ul>
+								{#changes}
+									<li>{.|s}</li>
+								{/changes}
+							</ul>
+						</td>
+					</tr>
+				{/changeLog}
+			</tbody>
 		</table>
 		<hr>
 		<a name="individualSets"></a>

@@ -236,6 +236,7 @@ function processCards(cardXMLPath, language, cb)
 			{
 				base.error("Error for file: " + cardXMLPath);
 				base.error(err);
+				base.error("If new field, check out card on hearthhead and: http://www.hearthpwn.com/cards?filter-set=18");
 			}
 
 			setImmediate(function() { cb(err, cards); });
@@ -371,7 +372,9 @@ var TAG_VALUE_MAPS =
 		12 : "Curse of Naxxramas",
 		13 : "Goblins vs Gnomes",
 		14 : "Blackrock Mountain",
-		16 : "Credits"
+		16 : "Credits",
+		17 : "Hero Skins",
+		18 : "Tavern Brawl"
 	},
 	"CardType" :
 	{
