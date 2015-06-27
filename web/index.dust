@@ -23,7 +23,7 @@
 		<center><h1 style="font-size: 240%;">Hearthstone JSON</h1></center>
 		<p style="margin-top: 1.0em;">This project provides up to date <a href="http://us.battle.net/hearthstone/en/">Hearthstone</a> card data in <a href="http://www.json.org/">JSON</a> format for developers to easily use in their projects.<br>
 		<br>
-		For more details see: <a href="#exampleCard">Example Card</a> and <a href="#documentation">Documentation</a> and <a href="http://www.reddit.com/r/hearthstone/comments/24i5o1/hearthsone_json_new_website_provides_hearthstone/">Reddit Thread</a><br>
+		For more details see: <a href="#exampleCard">Example Card</a> and <a href="#documentation">Documentation</a><br>
 		<br>
 		Any bugs or feedback, e-mail me at <a href="mailto:robert@cosmicrealms.com">robert@cosmicrealms.com</a><br>
 		</p>
@@ -398,5 +398,12 @@
 		<p>Source code used to generate the JSON is available here: <a href="https://github.com/Sembiance/hearthstonejson">https://github.com/Sembiance/hearthstonejson</a><br>
 		<br>
 		</p>
+		<hr>
+		<a name="otherSites"></a>
+		<h1>My Other JSON Sites<a href="#top">(back to top)</a></h1>
+		<table>
+			<tr><td>Magic the Gathering</td><td><a href="http://mtgjson.com">mtgjson.com</a></td></tr>
+			<tr><td>Heroes of the Storm</td><td><a href="http://heroesjson.com">heroesjson.com</a></td></tr>
+		</table>
 	</body>
 </html>
