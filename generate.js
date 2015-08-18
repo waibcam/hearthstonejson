@@ -138,7 +138,7 @@ var USED_TAGS = ["CardID", "CardName", "CardSet", "CardType", "Faction", "Rarity
 				 "Elite", "Race", "Class", "HowToGetThisCard", "HowToGetThisGoldCard"];
 var IGNORED_TAGS = ["AttackVisualType", "EnchantmentBirthVisual", "EnchantmentIdleVisual", "TargetingArrowText", "DevState", "TriggerVisual", "Recall", "AIMustPlay", "InvisibleDeathrattle"];
 var MECHANIC_TAGS = ["Windfury", "Combo", "Secret", "Battlecry", "Deathrattle", "Taunt", "Stealth", "Spellpower", "Enrage", "Freeze", "Charge", "Overload", "Divine Shield", "Silence", "Morph", "OneTurnEffect", "Poisonous", "Aura", "AdjacentBuff",
-					"HealTarget", "GrantCharge", "ImmuneToSpellpower", "AffectedBySpellPower", "Summoned"];
+					"HealTarget", "GrantCharge", "ImmuneToSpellpower", "AffectedBySpellPower", "Summoned", "Inspire"];
 var KNOWN_TAGS = USED_TAGS.concat(IGNORED_TAGS, MECHANIC_TAGS);
 var ENUMID_TO_NAME =
 {
@@ -199,7 +199,10 @@ var ENUMID_TO_NAME =
 	389 : "UNKNOWN_DuneMaulShaman",
 	380 : "UNKNOWN_Blackrock_Heroes",
 	402 : "UNKNOWN_Intense_Gaze",
-	401 : "UNKNOWN_BroodAffliction"
+	401 : "UNKNOWN_BroodAffliction",
+	396 : "UNKNOWN_396",
+        403 : "UNKNOWN_403_Inspire",
+        404 : "UNKNOWN_404"
 };
 var BOOLEAN_TYPES = ["Collectible", "Elite"];
 // Fields above that I don't know the actual name for has an UNKNOWN_ prefix
